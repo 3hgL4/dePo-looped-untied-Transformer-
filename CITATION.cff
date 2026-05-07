@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying paper."
+title: "Inside the Loop: code release"
+authors:
+  - name: "Anonymous"
+date-released: 2026-05-07
+license: Apache-2.0
+preferred-citation:
+  type: article
+  title: "Inside the Loop: depth-recurrence and saturation in looped transformers"
+  authors:
+    - name: "Anonymous"
+  year: 2026
+  journal: "preprint"
