@@ -7,7 +7,7 @@ date-released: 2026-05-07
 license: Apache-2.0
 preferred-citation:
   type: article
-  title: "Inside the Loop: depth-recurrence and saturation in looped transformers"
+  title: "Inside the Loop: A Mechanistic Study of Weight-Tied Transformers on Depth-Bound Algorithmic Tasks"
   authors:
     - name: "Anonymous"
   year: 2026

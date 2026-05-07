@@ -1,6 +1,6 @@
 # Inside the Loop
 
-Code release for **_Inside the Loop: depth-recurrence and saturation in looped transformers_** (anonymous submission).
+Code release for **_Inside the Loop: A Mechanistic Study of Weight-Tied Transformers on Depth-Bound Algorithmic Tasks_** (anonymous submission).
 
 This repository contains the training, probing, and figure code that produced
 every numbered figure in the paper. There is one task (the directed
@@ -168,7 +168,7 @@ Selected by `--config_name` (full list in `looped_lm/model_configs.py`):
 
 ```bibtex
 @article{insidetheloop2026,
-  title  = {Inside the Loop: depth-recurrence and saturation in looped transformers},
+  title  = {Inside the Loop: A Mechanistic Study of Weight-Tied Transformers on Depth-Bound Algorithmic Tasks},
   author = {Anonymous},
   year   = {2026},
   note   = {Anonymous preprint}
