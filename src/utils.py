@@ -1,5 +1,6 @@
 """
-Shared utilities: tokenizers, seeding, and learning-rate schedules.
+Shared utilities: seeding, parameter counts, the compact-vocabulary tokenizer wrapper
+and the learning-rate schedule.
 """
 
 import math
@@ -142,18 +143,6 @@ class TokenMappingTokenizer:
         if self.map_new_to_old is None:
             return len(self.old_tokenizer)
         return len(self.map_new_to_old)
-
-
-class ConstantWithWarmupSchedule:
-    """Constant LR after linear warmup."""
-
-    def __init__(self, warmup_steps=1000):
-        self.warmup_steps = warmup_steps
-
-    def __call__(self, step):
-        if step < self.warmup_steps:
-            return float(step) / float(max(1, self.warmup_steps))
-        return 1.0
 
 
 class CosineWarmupSchedule:

@@ -1,11 +1,11 @@
 """
-H2 logit lens on trained dePo checkpoints.
+First-token logit lens on trained dePo checkpoints.
 
 Per-iteration distribution over node identities, read directly through the
 model's own LM head (Coconut Sec 4.3 style; Anthropic 2412.06769). For each
 '?' position in each dePo input, we extract the post-iteration-k hidden state
 (or post-layer-l for unlooped baselines), apply the model's readout
-(coda layers + norm + out_proj), restrict the vocab logits to the entity-token
+(final norm + out_proj), restrict the vocab logits to the entity-token
 subset {token(0), ..., token(N-1)}, and softmax. The result is a tensor
 
     P[query, level, node]
@@ -14,7 +14,7 @@ that we plot against the ground-truth chain (n_0, ..., n_H) to visualise
 "how the model commits to each hop with depth".
 
 Sanity checks (both must pass):
-    1. lm_head(coda(states[K])) at the '?+1' position equals model.forward
+    1. lm_head(states[K]) at the '?+1' position equals model.forward
        logits at the same position to within fp32 tolerance.
     2. argmax over {0..N-1} of the lensed distribution at level=K matches the
        model's actual answer prediction (i.e. its full forward-pass argmax
@@ -37,9 +37,9 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from looped_lm.model import LoopedTransformer, Transformer
-from looped_lm.model_configs import create_model
-from looped_lm.probe_h2 import (
+from src.model import LoopedTransformer, Transformer
+from src.model_configs import create_model
+from src.probe_h2 import (
     build_tokenizer,
     extract_states_deep,
     extract_states_looped,
@@ -97,19 +97,12 @@ def build_node_token_map(tokenizer, N: int) -> tuple[np.ndarray, list[int]]:
 def apply_readout(
     model, x: torch.Tensor, attention_mask: torch.Tensor
 ) -> torch.Tensor:
-    """Run coda layers (if any) + norm + out_proj on hidden state x.
+    """Apply the model's own final norm + out_proj to hidden state x.
 
-    For Ouro-style models (no coda), this is just norm + out_proj.
-    For ETD-style models, the coda layers are applied first, matching what
-    the full forward pass does after the recurrent block.
-    For unlooped Transformer, there is no coda, so the lens at layer l
-    is norm + out_proj applied directly to that layer's output (canonical
-    logit lens; not the same as forward, since forward only norms once at
-    the very end - this is the standard logit-lens approximation).
+    For a looped model at the last iteration this equals the forward pass. For
+    an untied model the lens at layer l is norm + out_proj applied directly to
+    that layer's output (the canonical logit lens).
     """
-    if isinstance(model, LoopedTransformer):
-        for layer in model.coda_layers:
-            x = layer(x, attention_mask)
     x = model.norm(x)
     return model.out_proj(x)
 
@@ -131,6 +124,7 @@ def run_logit_lens(
     H_eval: int,
     node_to_tok: np.ndarray,
     ambiguous: list[int],
+    per_layer: bool = False,
 ) -> dict:
     """Iterate over eval_set, for each '?' query collect the (n_levels, N) lensed
     probability matrix, the ground-truth chain (H+1,), and whether the model's
@@ -146,7 +140,9 @@ def run_logit_lens(
     N = node_to_tok.shape[0]
     node_to_tok_t = torch.from_numpy(node_to_tok).long().to(device)
 
-    n_levels = (K_or_layers + 1)  # index 0 is post-embedding baseline
+    # index 0 is post-embedding baseline; with per_layer=True a looped model
+    # yields K*L+1 levels (one per unrolled layer), matching the probe axis.
+    n_levels = None
 
     all_probs = []        # list of (n_levels, N) np.ndarray
     all_chains = []       # list of (H+1,) np.ndarray
@@ -166,13 +162,17 @@ def run_logit_lens(
         if is_looped:
             states = extract_states_looped(
                 model, tok["tokens"], tok["attention_mask"],
-                K=K_or_layers, device=device,
+                K=K_or_layers, device=device, per_layer=per_layer,
             )
         else:
             states = extract_states_deep(
                 model, tok["tokens"], tok["attention_mask"], device=device,
             )
         # states: (n_levels, B, T, D) on CPU
+        if n_levels is None:
+            n_levels = int(states.shape[0])
+        elif int(states.shape[0]) != n_levels:
+            raise RuntimeError(f"level count changed: {states.shape[0]} vs {n_levels}")
 
         # 2) Forward-pass logits (for sanity check at level=K_max / final layer)
         if is_looped:
@@ -183,17 +183,21 @@ def run_logit_lens(
 
         positions = find_query_positions(tok["tokens"], q_token_ids)
 
-        # 3) Apply readout level-by-level (one at a time to limit memory)
-        # For each level we only need the '?+1' positions, but applying readout
-        # to those positions only is awkward because the readout includes coda
-        # layers that need the full sequence for attention. So we apply
-        # coda+norm+out_proj to the full sequence per level.
-        per_level_logits = []  # list of (B, T, vocab) tensors on CPU
+        # 3) Apply readout (norm + out_proj) level-by-level, one at a time to limit memory.
+        # Full-vocab softmax at every level, then the node first-token entries
+        # are kept (B, T, N); the full logits are retained only at the final
+        # level, for the sanity comparison against the forward pass. With 33
+        # per-layer levels the full (B, T, vocab) tensors no longer fit.
+        per_level_node_probs = []  # list of (B, T, N) tensors on CPU
+        final_logits = None        # (B, T, vocab) on CPU
         for lvl in range(n_levels):
             x_lvl = states[lvl].to(device)
             logits_lvl = apply_readout(model, x_lvl, mask_dev)
-            per_level_logits.append(logits_lvl.cpu())
-            del x_lvl, logits_lvl
+            probs_lvl = torch.softmax(logits_lvl.float(), dim=-1)[..., node_to_tok_t]
+            per_level_node_probs.append(probs_lvl.cpu())
+            if lvl == n_levels - 1:
+                final_logits = logits_lvl.cpu()
+            del x_lvl, logits_lvl, probs_lvl
 
         for b, sample in enumerate(chunk):
             qmeta = sample["meta"]["queries"]
@@ -206,18 +210,15 @@ def run_logit_lens(
                 if chain.shape[0] != H_eval + 1:
                     continue
 
-                # Per-level logits at '?+1' for this query: (n_levels, vocab)
-                lvl_logits = torch.stack(
-                    [per_level_logits[lvl][b, pos] for lvl in range(n_levels)],
-                    dim=0,
-                )  # (n_levels, vocab) on CPU
-
-                # Full-vocab softmax, then read per-node first-token prob.
-                # This gives proper probabilities; ambiguous nodes (multi-digit
+                # Per-level node probabilities at '?+1' for this query:
+                # (n_levels, N). Full-vocab softmax was taken above, so these
+                # are proper probabilities; ambiguous nodes (multi-digit
                 # sharing first tokens) get IDENTICAL values across the group,
                 # which the plotter will flag / filter.
-                full_probs = torch.softmax(lvl_logits.float(), dim=-1)  # (n_levels, V)
-                probs = full_probs[:, node_to_tok].numpy()  # (n_levels, N)
+                probs = torch.stack(
+                    [per_level_node_probs[lvl][b, pos] for lvl in range(n_levels)],
+                    dim=0,
+                ).numpy()  # (n_levels, N)
                 all_probs.append(probs)
                 all_chains.append(chain)
 
@@ -228,10 +229,10 @@ def run_logit_lens(
                 all_solved.append(bool(fwd_argmax == gt_tok))
 
                 # Sanity buffers (final level only)
-                sanity_lens_logits_K.append(lvl_logits[-1].clone())
+                sanity_lens_logits_K.append(final_logits[b, pos].clone())
                 sanity_forward_logits_K.append(fwd_logits[b, pos].cpu().clone())
 
-        del per_level_logits, fwd_logits, states
+        del per_level_node_probs, final_logits, fwd_logits, states
 
     probs = np.stack(all_probs, axis=0)        # (Q, n_levels, N)
     chains = np.stack(all_chains, axis=0)      # (Q, H+1)
@@ -283,7 +284,7 @@ def run_sanity_checks(
         agree_rate = float("nan")
     pass2 = agree_rate >= 0.99
 
-    # Solved-rate sanity: looped model trained at MLRD>=H_eval should solve
+    # Solved-rate sanity: looped model that solves hops up to H_eval should solve
     # most queries.
     solved_rate = float(solved.mean())
 
@@ -373,6 +374,11 @@ def main():
                    help="Override training use_nope. Default: read from training args.json.")
     p.add_argument("--zero_init", default=None, action=argparse.BooleanOptionalAction,
                    help="Override training zero_init. Default: read from training args.json.")
+    p.add_argument("--per_layer", action="store_true",
+                   help="Looped models: one level after every unrolled layer "
+                        "(K*L+1 levels, block boundaries every L) instead of one "
+                        "per iteration, matching probe_h2.py --per_layer. "
+                        "Untied models are per-layer either way.")
     p.add_argument("--sanity_only", action="store_true",
                    help="Run on just --n_samples (e.g. 8) and only report sanity "
                         "checks. Used to validate the lens before a full sweep.")
@@ -453,6 +459,7 @@ def main():
         H_eval=args.H_eval,
         node_to_tok=node_to_tok,
         ambiguous=ambiguous,
+        per_layer=args.per_layer,
     )
     print(f"[lens] lens done: probs={out['probs'].shape} "
           f"({time.time()-t0:.0f}s)")
@@ -499,7 +506,8 @@ def main():
         "checkpoint": str(args.checkpoint),
         "random_init": bool(args.random_init),
         "is_looped": bool(is_looped),
-        "n_levels": int(K_or_layers + 1),
+        "n_levels": int(out["probs"].shape[1]),
+        "per_layer": bool(args.per_layer),
         "K_or_layers": int(K_or_layers),
         "N": int(args.N),
         "H_eval": int(args.H_eval),

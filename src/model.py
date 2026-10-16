@@ -1,14 +1,12 @@
 """
-Transformer and LoopedTransformer models.
+Untied (Transformer) and looped (LoopedTransformer) decoder-only models.
 
-Base transformer is LLaMA-v2-style: RoPE, SwiGLU, RMSNorm, causal attention.
+LLaMA-v2-style blocks: RoPE, SwiGLU, pre-norm RMSNorm, causal attention.
 
 LoopedTransformer adds:
-- Weight-shared recurrent layers iterated K times
-- Optional prelude/coda layers (ETD-style)
-- Learned timestep embeddings per iteration (TMLT-style)
-- Optional NoPE (no positional embeddings) for depth extrapolation
-- Zero-init output projections for stable deep unrolling
+- one block of L weight-shared layers iterated K times (no prelude or coda)
+- a learned iteration embedding tau_k added before each iteration
+- zero-initialized output projections for stable deep unrolling
 - K configurable at inference time
 """
 
@@ -134,11 +132,11 @@ class TransformerBlock(nn.Module):
 
 
 # ---------------------------------------------------------------------------
-# Standard Transformer (unlooped baseline)
+# Standard Transformer (untied baseline)
 # ---------------------------------------------------------------------------
 
 class Transformer(nn.Module):
-    """Standard transformer with unique layers. Used as unlooped baseline."""
+    """Standard transformer with N distinct layers, each applied once (deep-N)."""
 
     def __init__(
         self,
@@ -175,6 +173,16 @@ class Transformer(nn.Module):
         self.norm = nn.RMSNorm(dim, eps=norm_eps)
         self.out_proj = nn.Linear(dim, vocab_size, bias=False)
 
+    def zero_init_output_projections(self):
+        """Zero-init o_proj (attention) and w3 (FFN), as LoopedTransformer does.
+
+        The paper's untied runs keep the default initialization (--no_zero_init);
+        the option exists so that the choice is explicit and recorded in args.json.
+        """
+        for layer in self.layers:
+            nn.init.zeros_(layer.attention.o_proj.weight)
+            nn.init.zeros_(layer.feed_forward.w3.weight)
+
     def forward(self, tokens: torch.Tensor, attention_mask=None):
         x = self.token_embeddings(tokens)
         for layer in self.layers:
@@ -188,19 +196,10 @@ class Transformer(nn.Module):
 # ---------------------------------------------------------------------------
 
 class LoopedTransformer(nn.Module):
-    """Transformer with weight-shared recurrent layers iterated K times.
+    """Transformer with a block of L weight-shared layers iterated K times.
 
-    Architecture: embed -> prelude -> K x recurrent -> coda -> norm -> output
-
-    Ouro-style (all shared): n_prelude_layers=0, n_coda_layers=0
-    ETD-style (prelude/recurrent/coda): non-zero prelude and coda
-
-    Features:
-    - Learned timestep embedding per iteration (TMLT-style, critical for expressivity)
-    - Optional input injection (Parcae-style, off by default for Kohli comparability)
-    - Optional NoPE (no positional embeddings, recommended for depth extrapolation)
-    - Zero-init output projections for stable deep unrolling (Kohli et al.)
-    - K configurable at inference time
+    Architecture: embed -> K x (add tau_k, block of L layers) -> norm -> output.
+    Every layer is in the loop; there is no prelude, coda or input re-injection.
     """
 
     def __init__(
@@ -211,14 +210,11 @@ class LoopedTransformer(nn.Module):
         n_heads: int,
         max_sequence_len: int,
         K_max: int,
-        n_prelude_layers: int = 0,
-        n_coda_layers: int = 0,
         causal: bool = True,
         feed_forward_multiple_of: int = 1,
         pad_token_idx: int = None,
         norm_eps: float = 1e-5,
         use_timestep_embedding: bool = True,
-        use_input_injection: bool = False,
         use_positional_embedding: bool = True,
     ):
         super().__init__()
@@ -226,31 +222,16 @@ class LoopedTransformer(nn.Module):
         self.K_max = K_max
         self.n_recurrent_layers = n_recurrent_layers
         self.use_timestep_embedding = use_timestep_embedding
-        self.use_input_injection = use_input_injection
 
-        # Embedding
         self.token_embeddings = nn.Embedding(vocab_size, dim, pad_token_idx)
 
-        # Positional encoding (NoPE when use_positional_embedding=False)
+        # Rotary positional encoding (NoPE when use_positional_embedding=False)
         if use_positional_embedding:
             self.pos_embed_func = RotaryPositionEmbedding(
                 dim=dim // n_heads, max_sequence_len=max_sequence_len
             )
         else:
             self.pos_embed_func = None
-
-        # Prelude layers (unique, not looped)
-        self.prelude_layers = nn.ModuleList([
-            TransformerBlock(
-                dim=dim,
-                n_heads=n_heads,
-                causal=causal,
-                feed_forward_multiple_of=feed_forward_multiple_of,
-                positional_embedding_func=self.pos_embed_func,
-                norm_eps=norm_eps,
-            )
-            for _ in range(n_prelude_layers)
-        ])
 
         # Recurrent layers (weight-shared, iterated K times)
         self.recurrent_layers = nn.ModuleList([
@@ -265,47 +246,29 @@ class LoopedTransformer(nn.Module):
             for _ in range(n_recurrent_layers)
         ])
 
-        # Coda layers (unique, not looped)
-        self.coda_layers = nn.ModuleList([
-            TransformerBlock(
-                dim=dim,
-                n_heads=n_heads,
-                causal=causal,
-                feed_forward_multiple_of=feed_forward_multiple_of,
-                positional_embedding_func=self.pos_embed_func,
-                norm_eps=norm_eps,
-            )
-            for _ in range(n_coda_layers)
-        ])
-
-        # Timestep embeddings (TMLT-style): one learned vector per iteration
+        # Iteration embeddings: one learned vector per iteration
         if use_timestep_embedding:
             self.timestep_embeddings = nn.Embedding(K_max, dim)
             nn.init.normal_(self.timestep_embeddings.weight, std=0.02)
 
-        # Output
         self.norm = nn.RMSNorm(dim, eps=norm_eps)
         self.out_proj = nn.Linear(dim, vocab_size, bias=False)
 
     def zero_init_output_projections(self):
         """Zero-init o_proj (attention) and w3 (FFN) for stable deep unrolling.
 
-        Following Kohli et al. (2604.07822): ensures each recurrent iteration
-        is initially an identity-like operation, stabilizing the input-output
-        Jacobian even when unrolled to many iterations.
+        Following Kohli et al. (arXiv 2604.07822): each iteration starts as an
+        identity-like map, which keeps the input-output Jacobian stable even
+        when unrolled for many iterations.
         """
         for layer in self.recurrent_layers:
             nn.init.zeros_(layer.attention.o_proj.weight)
             nn.init.zeros_(layer.feed_forward.w3.weight)
 
     def effective_depth(self, K: int = None) -> int:
-        """Total sequential layers in a forward pass."""
+        """Layer evaluations in a forward pass (L * K)."""
         K = K or self.K_max
-        return (
-            len(self.prelude_layers)
-            + K * self.n_recurrent_layers
-            + len(self.coda_layers)
-        )
+        return K * self.n_recurrent_layers
 
     def forward(
         self,
@@ -320,36 +283,13 @@ class LoopedTransformer(nn.Module):
             K: number of loop iterations (default: K_max)
         """
         K = K or self.K_max
-
         x = self.token_embeddings(tokens)
-
-        # Prelude
-        for layer in self.prelude_layers:
-            x = layer(x, attention_mask)
-
-        # Save initial state for input injection (off by default)
-        if self.use_input_injection:
-            x_init = x
-
-        # Recurrent block: K iterations of the shared layers (full BPTT)
         for k in range(K):
-            # Input injection: add initial embedding back (stabilizes fixed points)
-            if self.use_input_injection and k > 0:
-                x = x + x_init
-
-            # Add timestep embedding for this iteration
             if self.use_timestep_embedding:
                 t_idx = min(k, self.K_max - 1)
                 x = x + self.timestep_embeddings.weight[t_idx]
-
-            # Apply all recurrent layers
             for layer in self.recurrent_layers:
                 x = layer(x, attention_mask)
-
-        # Coda
-        for layer in self.coda_layers:
-            x = layer(x, attention_mask)
-
         x = self.norm(x)
         return self.out_proj(x)
 
@@ -358,34 +298,26 @@ class LoopedTransformer(nn.Module):
         tokens: torch.Tensor,
         attention_mask=None,
         K: int = None,
+        per_layer: bool = False,
     ) -> list[torch.Tensor]:
-        """Run forward pass and return hidden state after each loop iteration.
+        """Run a forward pass and return the hidden state after each iteration.
 
-        Useful for linear probing and trajectory analysis (H2 experiments).
-        Returns list of K tensors, each (batch_size, seq_len, dim).
+        Returns K tensors, each (batch_size, seq_len, dim). With per_layer=True,
+        returns K * n_recurrent_layers tensors, one after every layer inside
+        every iteration (block boundaries every n_recurrent_layers entries), for
+        depth-matched comparison with untied stacks.
         """
         K = K or self.K_max
         states = []
-
         x = self.token_embeddings(tokens)
-
-        for layer in self.prelude_layers:
-            x = layer(x, attention_mask)
-
-        if self.use_input_injection:
-            x_init = x
-
         for k in range(K):
-            if self.use_input_injection and k > 0:
-                x = x + x_init
-
             if self.use_timestep_embedding:
                 t_idx = min(k, self.K_max - 1)
                 x = x + self.timestep_embeddings.weight[t_idx]
-
             for layer in self.recurrent_layers:
                 x = layer(x, attention_mask)
-
-            states.append(x.detach().clone())
-
+                if per_layer:
+                    states.append(x.detach().clone())
+            if not per_layer:
+                states.append(x.detach().clone())
         return states

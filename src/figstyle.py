@@ -1,10 +1,10 @@
-"""Publication-clean figure style for the looped-LMs paper.
+"""Figure style shared by every figure of the paper.
 
 Single source of truth for matplotlib rcParams, color palette, and marker
 shapes used across every figure in this repo. Any new figure-generation
 script should start with:
 
-    from looped_lm.figstyle import apply_style, PALETTE_L, MARKERS_L, ACCENT_RED
+    from src.figstyle import apply_style, PALETTE_L, MARKERS_L, ACCENT_RED
     apply_style()
 
 This guarantees consistent typography (Computer Modern serif), thin black
@@ -15,6 +15,7 @@ color/marker mapping keyed by the loop count L.
 from __future__ import annotations
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 
 # Color palette indexed by loop count L. deep-N corresponds to L=1.
@@ -23,6 +24,7 @@ PALETTE_L = {
     2: "#1f77b4",  # ouro L=2                  - blue
     4: "#2ca02c",  # ouro L=4                  - green
     8: "#d62728",  # ouro L=8                  - red
+    16: "#9467bd", # ouro L=16                 - purple
 }
 
 # Marker shape indexed by L. Same key set as PALETTE_L; consistent across
@@ -33,11 +35,29 @@ MARKERS_L = {
     2: "o",
     4: "D",
     8: "^",
+    16: "v",
+}
+
+# Colour indexed by training seed, for panels that show several seeds of ONE
+# model family. Seed 42 keeps the looped-family red; the others take colours absent from
+# PALETTE_L, so no seed can be misread as a different loop count. Markers for
+# seeds stay the caller's choice; colour alone must separate them in print.
+SEED_PALETTE = {
+    42: "#d62728",  # looped-family red
+    43: "#1b7f79",  # teal
+    44: "#e69f00",  # ochre
+    45: "#808000",  # olive
+    46: "#8c564b",  # brown
 }
 
 # Reference accent for threshold lines (0.8 accuracy, H_max saturation, ...).
 ACCENT_RED = "#c0392b"
 
+# Sequential map for probe selectivity and other non-negative [0, 1] quantities.
+# White at zero, the family red at high values; there is no cool half because
+# selectivity below zero is sampling noise and is clipped at the lower limit.
+SELECTIVITY_CMAP = LinearSegmentedColormap.from_list(
+    "selectivity", ["#ffffff", "#fcbba1", "#fb6a4a", "#d62728", "#67000d"])
 
 _RC: dict = {
     # Typography

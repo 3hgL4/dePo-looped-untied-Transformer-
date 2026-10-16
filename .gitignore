@@ -1,42 +1,11 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-
-# Virtual environments
+*.pyc
 .venv/
-venv/
-env/
-
-# uv
-.uv/
-
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-*.egg
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Editors
-.vscode/
-.idea/
-*.swp
+.pytest_cache/
+.mplconfig/
 .DS_Store
-
-# Training artefacts (do not commit checkpoints, logs, or generated figures)
-runs/
-checkpoints/
 *.pt
-*.ckpt
-results/
-figures/
-logs/
-events.out.tfevents.*
-
-# Local overrides
-.env
-*.local
+# Outputs of the recipes (repository root only; experiments/*/ hold the shipped data)
+/runs/
+/probe_outputs/
+/figures/

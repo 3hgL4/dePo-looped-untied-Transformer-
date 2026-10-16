@@ -1,34 +1,38 @@
 [project]
-name = "looped_lm"
-version = "0.1.0"
-description = "Looped transformers: training, probing, and figure code for Inside the Loop (anonymous)."
+name = "insidetheloop"
+version = "1.0.0"
+description = "Training, probing and analysis code for 'Inside the Loop' (NeurIPS 2026)"
 readme = "README.md"
-license = { text = "Apache-2.0" }
-requires-python = ">=3.10"
-authors = [{ name = "Anonymous" }]
+license = { text = "MIT" }
+requires-python = ">=3.10,<3.13"
+authors = [
+    { name = "Magnus Sesodia" },
+    { name = "Juil Sock" },
+    { name = "Philip Torr" },
+    { name = "Christian Schroeder de Witt" },
+]
 dependencies = [
-    "torch>=2.5.1",
+    # The version the paper's runs used. Newer releases reject the model's attention call
+    # (padding mask together with is_causal=True).
+    "torch==2.5.1",
     "numpy>=1.24",
     "tqdm>=4.60",
     "transformers>=4.36,<5.0",
-    "pyyaml>=6.0",
-    "matplotlib>=3.7",
-    "tensorboard>=2.14",
-    "scipy>=1.10",
-    "pandas>=2.3.3",
-    "pyarrow>=24.0.0",
+    "matplotlib==3.10.8",  # the version that rendered the paper figures
 ]
+
+[dependency-groups]
+dev = ["pytest>=8"]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/looped_lm"]
+packages = ["src"]
 
-# Optional CUDA 12.1 PyTorch wheels for Linux. Comment out the
-# [[tool.uv.index]] and [tool.uv.sources] blocks if you want pip to
-# resolve torch normally (e.g. on macOS / CPU-only / a different CUDA).
+# CUDA 12.1 PyTorch wheels on Linux (driver 530 and newer). On another CUDA version, change the
+# index URL; on macOS the default PyPI wheel is used.
 [[tool.uv.index]]
 name = "pytorch-cu121"
 url = "https://download.pytorch.org/whl/cu121"
@@ -38,3 +42,6 @@ explicit = true
 torch = [
     { index = "pytorch-cu121", marker = "sys_platform == 'linux'" },
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
