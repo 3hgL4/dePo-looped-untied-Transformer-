@@ -21,6 +21,9 @@ dependencies = [
     "matplotlib==3.10.8",  # the version that rendered the paper figures
 ]
 
+[project.urls]
+Repository = "https://github.com/magnus-sesodia/insidetheloop"
+
 [dependency-groups]
 dev = ["pytest>=8"]
 

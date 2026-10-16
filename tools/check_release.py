@@ -5,7 +5,8 @@
 
 Exits non-zero and lists every hit. Binary files are skipped; .venv, runs and probe outputs
 are ignored. The authors' names in the licence and package metadata are allowed: the user-name
-rule matches the lower-case "magnus" that appears in home directories and storage paths only.
+rule matches the lower-case "magnus" that appears in home directories and storage paths only, and
+allows the public repository URL.
 """
 import argparse
 import re
@@ -17,7 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DENY = re.compile(r"torrnode|/storage3|/homes/|/Users/|/private/tmp|scratchpad|physicsofloopedlms|"
                   r"PAPER_STATUS|EXPERIMENT_QUEUE|CAMERA_READY|HANDOVER|CLAUDE\.md|iclr|pooling",
                   re.IGNORECASE)
-USER = re.compile(r"\bmagnus\b")  # case-sensitive: the user name, never the author name "Magnus"
+# The user name, case-sensitive; the author name "Magnus" and the repository URL are allowed.
+USER = re.compile(r"\bmagnus\b(?!-sesodia/insidetheloop)")
 SKIP_DIRS = {".git", ".venv", "runs", "probe_outputs", "__pycache__", ".pytest_cache", ".mplconfig"}
 SELF = Path(__file__).resolve()
 TAG = "neurips-2026-submission"

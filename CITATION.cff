@@ -1,14 +1,41 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite the accompanying paper."
-title: "Inside the Loop: code release"
+message: "If you use this code, please cite the paper below."
+title: "Inside the Loop: A Mechanistic Study of Weight-Tied Transformers on Depth-Bound Algorithmic Tasks"
+type: software
 authors:
-  - name: "Anonymous"
-date-released: 2026-05-07
-license: Apache-2.0
+  - family-names: Sesodia
+    given-names: Magnus
+    affiliation: University of Oxford
+  - family-names: Sock
+    given-names: Juil
+    affiliation: BBC R&D
+  - family-names: Torr
+    given-names: Philip
+    affiliation: University of Oxford
+  - family-names: Schroeder de Witt
+    given-names: Christian
+    affiliation: University of Oxford
+repository-code: "https://github.com/magnus-sesodia/insidetheloop"
+license: MIT
+version: 1.0.0
+date-released: 2026-10-16
 preferred-citation:
-  type: article
+  type: conference-paper
   title: "Inside the Loop: A Mechanistic Study of Weight-Tied Transformers on Depth-Bound Algorithmic Tasks"
   authors:
-    - name: "Anonymous"
+    - family-names: Sesodia
+      given-names: Magnus
+      affiliation: University of Oxford
+    - family-names: Sock
+      given-names: Juil
+      affiliation: BBC R&D
+    - family-names: Torr
+      given-names: Philip
+      affiliation: University of Oxford
+    - family-names: Schroeder de Witt
+      given-names: Christian
+      affiliation: University of Oxford
+  collection-title: "NeurIPS 2026"
+  conference:
+    name: "Advances in Neural Information Processing Systems (NeurIPS)"
   year: 2026
-  journal: "preprint"
