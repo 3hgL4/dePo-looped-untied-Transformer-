@@ -1,0 +1,88 @@
+{
+ "run": "deep-32-lr3e4_s42",
+ "config_name": "deep-32",
+ "seed": 42,
+ "learning_rate": 0.0003,
+ "aux_deep_supervision": false,
+ "H_eval": 4,
+ "N": 16,
+ "M": 5,
+ "n_samples": 5000,
+ "eval_seed": 12345,
+ "max_len": 200,
+ "batch_size": 32,
+ "device": "cpu",
+ "eval_text_sha256": "fc89833490947492a169bada20cbd083c0824016aac2dfa8e96ca6bc83bd2e1c",
+ "checkpoint_source": "<storage>/h1_clean_sweep/runs/deep-32-lr3e4_s42/checkpoint.pt",
+ "checkpoint_sha256": "4ef769e42f956f1f99bc1528410deaddf968b5b2b89e9dd304a1a83f2d0b44f4",
+ "protocol": "teacher_forced_answer_tokens_plus_delimiter_v1",
+ "chance_full_answer": 0.0625,
+ "chance_first_token": 0.4375,
+ "complete_answer": {
+  "protocol": "teacher_forced_answer_tokens_plus_delimiter_v1",
+  "previous_query_answers": "teacher_forced",
+  "termination_target": "|",
+  "scoring_suffix": " |",
+  "scoring_suffix_note": "Appended after the final gold node; never scored as padding or EOS.",
+  "eval_text_sha256": "fc89833490947492a169bada20cbd083c0824016aac2dfa8e96ca6bc83bd2e1c",
+  "scoring_text_sha256": "871544e24e887905f42deab2e90b172720709d71582dc1f71ba74525ff9d1526",
+  "n_evaluated": 25000,
+  "complete_node_accuracy": 0.99984,
+  "answer_span_accuracy": 0.99984,
+  "boundary_accuracy": 1.0,
+  "strata": {
+   "all": {
+    "n_evaluated": 25000,
+    "n_correct": 24996,
+    "accuracy": 0.99984
+   },
+   "first_query": {
+    "n_evaluated": 5000,
+    "n_correct": 4999,
+    "accuracy": 0.9998
+   },
+   "fresh_start": {
+    "n_evaluated": 22089,
+    "n_correct": 22085,
+    "accuracy": 0.9998189143917787
+   },
+   "repeated_start": {
+    "n_evaluated": 2911,
+    "n_correct": 2911,
+    "accuracy": 1.0
+   }
+  }
+ },
+ "first_query_accuracy": 0.9998,
+ "first_token_on_disk": {
+  "source": "experiments/h2_probing/results/matched_lr3e4_20260915/validation_production.json",
+  "accuracy": 0.9996,
+  "k_sweep_head_accuracy": null
+ },
+ "sanity_check": {
+  "reference": "experiments/h2_probing/results/matched_lr3e4_20260915/validation_production.json",
+  "reference_strata": {
+   "all": {
+    "n_evaluated": 25000,
+    "n_correct": 24996,
+    "accuracy": 0.99984
+   },
+   "first_query": {
+    "n_evaluated": 5000,
+    "n_correct": 4999,
+    "accuracy": 0.9998
+   },
+   "fresh_start": {
+    "n_evaluated": 22089,
+    "n_correct": 22085,
+    "accuracy": 0.9998189143917787
+   },
+   "repeated_start": {
+    "n_evaluated": 2911,
+    "n_correct": 2911,
+    "accuracy": 1.0
+   }
+  },
+  "reproduced_exactly": true
+ }
+}

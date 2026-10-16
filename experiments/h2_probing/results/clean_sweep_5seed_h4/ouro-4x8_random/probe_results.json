@@ -1,0 +1,106 @@
+{
+  "config_name": "ouro-4x8",
+  "checkpoint": "experiments/h1_clean_sweep/runs/ouro-4x8_s42/checkpoint.pt",
+  "random_init": true,
+  "is_looped": true,
+  "n_levels": 9,
+  "n_levels_label": "iteration",
+  "n_classes": 16,
+  "n_probe_examples": 25000,
+  "H_eval": 4,
+  "n_samples": 5000,
+  "M": 5,
+  "model_config": {
+    "dim": 256,
+    "n_heads": 8,
+    "causal": true,
+    "feed_forward_multiple_of": 64,
+    "norm_eps": 1e-05,
+    "vocab_size": 18,
+    "max_sequence_len": 512,
+    "pad_token_idx": 1,
+    "model_type": "looped",
+    "n_recurrent_layers": 4,
+    "K_max": 8,
+    "n_prelude_layers": 0,
+    "n_coda_layers": 0
+  },
+  "args": {
+    "checkpoint": "experiments/h1_clean_sweep/runs/ouro-4x8_s42/checkpoint.pt",
+    "config_name": "ouro-4x8",
+    "out_dir": "experiments/h2_probing/results/clean_sweep_5seed_h4/ouro-4x8_random",
+    "N": 16,
+    "M": 5,
+    "H_eval": 4,
+    "n_samples": 5000,
+    "max_len": 512,
+    "eval_seed": 12345,
+    "probe_seed": 0,
+    "train_frac": 0.8,
+    "batch_size": 32,
+    "device": "cuda",
+    "random_init": true,
+    "use_nope": true,
+    "zero_init": true,
+    "probe_types": "linear,mlp",
+    "k_sweep": false,
+    "sanity_min_acc": 0.0
+  },
+  "accuracy_summary": {
+    "linear_real": {
+      "max": 0.07000000029802322,
+      "argmax": [
+        1,
+        0
+      ],
+      "mean": 0.06348000466823578
+    },
+    "linear_shuffled": {
+      "max": 0.07000000029802322,
+      "argmax": [
+        5,
+        0
+      ],
+      "mean": 0.06252000480890274
+    },
+    "mlp_real": {
+      "max": 0.06759999692440033,
+      "argmax": [
+        1,
+        2
+      ],
+      "mean": 0.06236889213323593
+    },
+    "mlp_shuffled": {
+      "max": 0.07000000029802322,
+      "argmax": [
+        2,
+        0
+      ],
+      "mean": 0.06388889253139496
+    }
+  },
+  "model_prediction_sanity": {
+    "next_token_accuracy_at_probe_pos": 0.0,
+    "n_evaluated": 2500
+  },
+  "accumulation_score": {
+    "threshold": 0.5,
+    "onset_per_hop": [
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "persistence_per_hop": [
+      NaN,
+      NaN,
+      NaN,
+      NaN
+    ],
+    "global_persistence": NaN,
+    "n_hops_crossed": 0,
+    "n_hops_total": 4
+  },
+  "k_sweep_head_accuracy": null
+}

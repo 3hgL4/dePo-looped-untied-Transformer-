@@ -1,0 +1,115 @@
+{
+  "config_name": "ouro-4x8",
+  "checkpoint": "experiments/h1_clean_sweep/runs/ouro-4x8_s42/checkpoint.pt",
+  "random_init": false,
+  "is_looped": true,
+  "n_levels": 9,
+  "n_levels_label": "iteration",
+  "n_classes": 16,
+  "n_probe_examples": 25000,
+  "H_eval": 4,
+  "n_samples": 5000,
+  "M": 5,
+  "model_config": {
+    "dim": 256,
+    "n_heads": 8,
+    "causal": true,
+    "feed_forward_multiple_of": 64,
+    "norm_eps": 1e-05,
+    "vocab_size": 18,
+    "max_sequence_len": 200,
+    "pad_token_idx": 1,
+    "model_type": "looped",
+    "n_recurrent_layers": 4,
+    "K_max": 8,
+    "n_prelude_layers": 0,
+    "n_coda_layers": 0
+  },
+  "args": {
+    "checkpoint": "experiments/h1_clean_sweep/runs/ouro-4x8_s42/checkpoint.pt",
+    "config_name": "ouro-4x8",
+    "out_dir": "experiments/h2_probing/results/clean_sweep_5seed_h4/ouro-4x8_s42",
+    "N": 16,
+    "M": 5,
+    "H_eval": 4,
+    "n_samples": 5000,
+    "max_len": 200,
+    "eval_seed": 12345,
+    "probe_seed": 0,
+    "train_frac": 0.8,
+    "batch_size": 32,
+    "device": "cuda",
+    "random_init": false,
+    "use_nope": false,
+    "zero_init": true,
+    "probe_types": "linear,mlp",
+    "k_sweep": true,
+    "sanity_min_acc": 0.6
+  },
+  "accuracy_summary": {
+    "linear_real": {
+      "max": 1.0,
+      "argmax": [
+        2,
+        0
+      ],
+      "mean": 0.5650799870491028
+    },
+    "linear_shuffled": {
+      "max": 0.10119999945163727,
+      "argmax": [
+        8,
+        4
+      ],
+      "mean": 0.06252889335155487
+    },
+    "mlp_real": {
+      "max": 1.0,
+      "argmax": [
+        2,
+        0
+      ],
+      "mean": 0.5317555069923401
+    },
+    "mlp_shuffled": {
+      "max": 0.06920000165700912,
+      "argmax": [
+        3,
+        4
+      ],
+      "mean": 0.06432000547647476
+    }
+  },
+  "model_prediction_sanity": {
+    "next_token_accuracy_at_probe_pos": 1.0,
+    "n_evaluated": 2500
+  },
+  "accumulation_score": {
+    "threshold": 0.5,
+    "onset_per_hop": [
+      2,
+      3,
+      4,
+      4
+    ],
+    "persistence_per_hop": [
+      0.5855713486671448,
+      0.590399980545044,
+      0.8833599090576172,
+      0.9516800045967102
+    ],
+    "global_persistence": 0.752752810716629,
+    "n_hops_crossed": 4,
+    "n_hops_total": 4
+  },
+  "k_sweep_head_accuracy": [
+    0.43615999817848206,
+    0.4951600134372711,
+    0.4792400002479553,
+    0.7229599952697754,
+    0.9999600052833557,
+    0.9999600052833557,
+    0.9999600052833557,
+    0.9999600052833557
+  ]
+}

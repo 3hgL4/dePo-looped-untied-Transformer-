@@ -1,0 +1,35 @@
+{
+  "protocol": "teacher_forced_answer_tokens_plus_delimiter_v1",
+  "previous_query_answers": "teacher_forced",
+  "termination_target": "|",
+  "scoring_suffix": " |",
+  "scoring_suffix_note": "Appended after the final gold node; never scored as padding or EOS.",
+  "eval_text_sha256": "fc89833490947492a169bada20cbd083c0824016aac2dfa8e96ca6bc83bd2e1c",
+  "scoring_text_sha256": "871544e24e887905f42deab2e90b172720709d71582dc1f71ba74525ff9d1526",
+  "n_evaluated": 25000,
+  "complete_node_accuracy": 0.99996,
+  "answer_span_accuracy": 1.0,
+  "boundary_accuracy": 0.99996,
+  "strata": {
+    "all": {
+      "n_evaluated": 25000,
+      "n_correct": 24999,
+      "accuracy": 0.99996
+    },
+    "first_query": {
+      "n_evaluated": 5000,
+      "n_correct": 5000,
+      "accuracy": 1.0
+    },
+    "fresh_start": {
+      "n_evaluated": 22089,
+      "n_correct": 22088,
+      "accuracy": 0.9999547285979447
+    },
+    "repeated_start": {
+      "n_evaluated": 2911,
+      "n_correct": 2911,
+      "accuracy": 1.0
+    }
+  }
+}

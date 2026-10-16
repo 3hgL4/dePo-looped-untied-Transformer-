@@ -1,0 +1,18 @@
+{
+  "threshold": 0.5,
+  "onset_per_hop": [
+    -1,
+    -1,
+    -1,
+    -1
+  ],
+  "persistence_per_hop": [
+    NaN,
+    NaN,
+    NaN,
+    NaN
+  ],
+  "global_persistence": NaN,
+  "n_hops_crossed": 0,
+  "n_hops_total": 4
+}

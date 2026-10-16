@@ -1,0 +1,162 @@
+{
+  "config_name": "deep-32",
+  "checkpoint": "<storage>/h1_clean_sweep/runs/deep-32-lr3e4_s43/checkpoint.pt",
+  "random_init": false,
+  "is_looped": false,
+  "n_levels": 33,
+  "n_levels_label": "layer",
+  "n_classes": 16,
+  "n_probe_examples": 25000,
+  "probe_split": {
+    "unit": "prompt",
+    "eval_seed": 12345,
+    "probe_seed": 0,
+    "torch_probe_seed": 0,
+    "train_frac": 0.8,
+    "n_train_queries": 20000,
+    "n_test_queries": 5000,
+    "n_train_prompts": 4000,
+    "n_test_prompts": 1000,
+    "n_shared_prompts": 0,
+    "control_labels": "training_partition_only",
+    "eval_text_sha256": "fc89833490947492a169bada20cbd083c0824016aac2dfa8e96ca6bc83bd2e1c",
+    "split_arrays_sha256": "161d85fb2e14212947e40b3662b28051a649c313d42afac4253a61ed2c0b41c1",
+    "probe_source_sha256": "884491a67cd7b243b3ef35900a3f08f6b9fc8da1da0a5bff541925568ddfc5ce"
+  },
+  "H_eval": 4,
+  "n_samples": 5000,
+  "M": 5,
+  "model_config": {
+    "dim": 256,
+    "n_heads": 8,
+    "causal": true,
+    "feed_forward_multiple_of": 64,
+    "norm_eps": 1e-05,
+    "vocab_size": 18,
+    "max_sequence_len": 200,
+    "pad_token_idx": 1,
+    "model_type": "standard",
+    "n_layers": 32,
+    "use_layer_vectors": false
+  },
+  "args": {
+    "checkpoint": "<storage>/h1_clean_sweep/runs/deep-32-lr3e4_s43/checkpoint.pt",
+    "config_name": "deep-32",
+    "out_dir": "<storage>/h2_probing/matched_lr3e4_20260915/results/H4/deep-32-lr3e4_s43",
+    "task": "pointer",
+    "N": 16,
+    "M": 5,
+    "H_eval": 4,
+    "n_samples": 5000,
+    "max_len": 200,
+    "eval_seed": 12345,
+    "probe_seed": 0,
+    "train_frac": 0.8,
+    "split_by_prompt": true,
+    "complete_answer_eval": true,
+    "batch_size": 32,
+    "device": "cuda",
+    "random_init": false,
+    "use_nope": false,
+    "zero_init": true,
+    "probe_types": "linear",
+    "per_layer": true,
+    "k_sweep": false,
+    "transfer_matrix": false,
+    "split_by_correctness": false,
+    "sanity_min_acc": 0.8,
+    "no_timestep_embedding": false
+  },
+  "accuracy_summary": {
+    "linear_real": {
+      "max": 1.0,
+      "argmax": [
+        5,
+        0
+      ],
+      "mean": 0.3900703191757202
+    },
+    "linear_shuffled": {
+      "max": 0.11699999868869781,
+      "argmax": [
+        11,
+        0
+      ],
+      "mean": 0.06168605759739876
+    }
+  },
+  "task": "pointer",
+  "n_registers": null,
+  "model_prediction_sanity": {
+    "next_token_accuracy_at_probe_pos": 1.0,
+    "n_evaluated": 2500
+  },
+  "model_complete_answer": {
+    "protocol": "teacher_forced_answer_tokens_plus_delimiter_v1",
+    "previous_query_answers": "teacher_forced",
+    "termination_target": "|",
+    "scoring_suffix": " |",
+    "scoring_suffix_note": "Appended after the final gold node; never scored as padding or EOS.",
+    "eval_text_sha256": "fc89833490947492a169bada20cbd083c0824016aac2dfa8e96ca6bc83bd2e1c",
+    "scoring_text_sha256": "871544e24e887905f42deab2e90b172720709d71582dc1f71ba74525ff9d1526",
+    "n_evaluated": 25000,
+    "complete_node_accuracy": 1.0,
+    "answer_span_accuracy": 1.0,
+    "boundary_accuracy": 1.0,
+    "strata": {
+      "all": {
+        "n_evaluated": 25000,
+        "n_correct": 25000,
+        "accuracy": 1.0
+      },
+      "first_query": {
+        "n_evaluated": 5000,
+        "n_correct": 5000,
+        "accuracy": 1.0
+      },
+      "fresh_start": {
+        "n_evaluated": 22089,
+        "n_correct": 22089,
+        "accuracy": 1.0
+      },
+      "repeated_start": {
+        "n_evaluated": 2911,
+        "n_correct": 2911,
+        "accuracy": 1.0
+      }
+    }
+  },
+  "probe_strata": {
+    "first_query": {
+      "n_train_queries": 4000,
+      "n_test_queries": 1000
+    },
+    "fresh_start": {
+      "n_train_queries": 17673,
+      "n_test_queries": 4416
+    },
+    "repeated_start": {
+      "n_train_queries": 2327,
+      "n_test_queries": 584
+    }
+  },
+  "accumulation_score": {
+    "threshold": 0.5,
+    "onset_per_hop": [
+      17,
+      25,
+      29,
+      30
+    ],
+    "persistence_per_hop": [
+      0.8622374534606934,
+      0.7184749841690063,
+      0.8611000180244446,
+      0.8731999397277832
+    ],
+    "global_persistence": 0.8287530988454819,
+    "n_hops_crossed": 4,
+    "n_hops_total": 4
+  },
+  "k_sweep_head_accuracy": null
+}

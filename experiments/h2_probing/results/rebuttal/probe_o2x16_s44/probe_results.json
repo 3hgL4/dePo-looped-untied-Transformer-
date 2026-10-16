@@ -1,0 +1,91 @@
+{
+  "config_name": "ouro-2x16",
+  "checkpoint": "experiments/h1_clean_sweep/runs/ouro-2x16_s44/checkpoint.pt",
+  "random_init": false,
+  "is_looped": true,
+  "n_levels": 17,
+  "n_levels_label": "iteration",
+  "n_classes": 16,
+  "n_probe_examples": 15000,
+  "H_eval": 4,
+  "n_samples": 3000,
+  "M": 5,
+  "model_config": {
+    "dim": 256,
+    "n_heads": 8,
+    "causal": true,
+    "feed_forward_multiple_of": 64,
+    "norm_eps": 1e-05,
+    "vocab_size": 18,
+    "max_sequence_len": 200,
+    "pad_token_idx": 1,
+    "model_type": "looped",
+    "n_recurrent_layers": 2,
+    "K_max": 16,
+    "n_prelude_layers": 0,
+    "n_coda_layers": 0,
+    "use_timestep_embedding": true
+  },
+  "args": {
+    "checkpoint": "experiments/h1_clean_sweep/runs/ouro-2x16_s44/checkpoint.pt",
+    "config_name": "ouro-2x16",
+    "out_dir": "experiments/h2_probing/results/rebuttal/probe_o2x16_s44",
+    "N": 16,
+    "M": 5,
+    "H_eval": 4,
+    "n_samples": 3000,
+    "max_len": 200,
+    "eval_seed": 12345,
+    "probe_seed": 0,
+    "train_frac": 0.8,
+    "batch_size": 64,
+    "device": "cuda",
+    "random_init": false,
+    "use_nope": false,
+    "zero_init": true,
+    "probe_types": "linear",
+    "k_sweep": false,
+    "sanity_min_acc": 0.0
+  },
+  "accuracy_summary": {
+    "linear_real": {
+      "max": 1.0,
+      "argmax": [
+        2,
+        0
+      ],
+      "mean": 0.4159019887447357
+    },
+    "linear_shuffled": {
+      "max": 0.08933333307504654,
+      "argmax": [
+        5,
+        0
+      ],
+      "mean": 0.0634823590517044
+    }
+  },
+  "model_prediction_sanity": {
+    "next_token_accuracy_at_probe_pos": 0.9832,
+    "n_evaluated": 2500
+  },
+  "accumulation_score": {
+    "threshold": 0.5,
+    "onset_per_hop": [
+      2,
+      -1,
+      -1,
+      14
+    ],
+    "persistence_per_hop": [
+      0.6563110947608948,
+      NaN,
+      NaN,
+      0.8433333039283752
+    ],
+    "global_persistence": 0.749822199344635,
+    "n_hops_crossed": 2,
+    "n_hops_total": 4
+  },
+  "k_sweep_head_accuracy": null
+}

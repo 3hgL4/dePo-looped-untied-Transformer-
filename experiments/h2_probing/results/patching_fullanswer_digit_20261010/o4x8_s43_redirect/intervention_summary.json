@@ -1,0 +1,196 @@
+{
+  "n_records": 2000,
+  "H": 6,
+  "K": 8,
+  "full_answer": {
+    "all": {
+      "n": 2000,
+      "baseline_receiver_acc": 1.0,
+      "j_grid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "match_composed": [
+        0.0005,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "match_pure_A": [
+        0.0005,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "match_pure_B": [
+        0.5465,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_composed_distinct": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "distinct_counts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "first_query": {
+      "n": 400,
+      "baseline_receiver_acc": 1.0,
+      "j_grid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "match_composed": [
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "match_pure_A": [
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "match_pure_B": [
+        0.4975,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_composed_distinct": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "distinct_counts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "baseline_receiver_acc": 1.0,
+  "j_grid": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "match_composed": [
+    0.174,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "match_pure_A": [
+    0.174,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "match_pure_B": [
+    0.997,
+    0.1725,
+    0.1725,
+    0.1725,
+    0.1725,
+    0.1725,
+    0.1725
+  ],
+  "match_composed_unambiguous": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "unambiguous_counts": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "counts": [
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+  ],
+  "mode": "redirect",
+  "config_name": "ouro-4x8",
+  "checkpoint": "<storage>/h1_clean_sweep/runs/ouro-4x8_s43/checkpoint.pt",
+  "random_init": false,
+  "patch_answer_digit": true,
+  "no_timestep_embedding": false,
+  "use_nope": false,
+  "eval_seed": 20260727,
+  "full_answer_protocol": "greedy_answer_tokens_plus_delimiter_v1 (earlier answers teacher forced; equals teacher_forced_answer_tokens_plus_delimiter_v1 per target)"
+}

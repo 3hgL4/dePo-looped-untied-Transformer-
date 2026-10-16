@@ -1,0 +1,196 @@
+{
+  "n_records": 2000,
+  "H": 6,
+  "K": 8,
+  "full_answer": {
+    "all": {
+      "n": 2000,
+      "baseline_receiver_acc": 0.7705,
+      "j_grid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "match_composed": [
+        0.051,
+        0.0445,
+        0.055,
+        0.0565,
+        0.0525,
+        0.3415,
+        0.512
+      ],
+      "match_pure_A": [
+        0.129,
+        0.1375,
+        0.187,
+        0.2125,
+        0.2315,
+        0.3415,
+        0.512
+      ],
+      "match_pure_B": [
+        0.36,
+        0.0745,
+        0.063,
+        0.0585,
+        0.0535,
+        0.059,
+        0.0635
+      ],
+      "match_composed_distinct": [
+        0.03187250996015936,
+        0.03718309859154929,
+        0.04357931435212086,
+        0.044050343249427915,
+        0.042134831460674156,
+        null,
+        null
+      ],
+      "distinct_counts": [
+        1757.0,
+        1775.0,
+        1721.0,
+        1748.0,
+        1780.0,
+        0.0,
+        0.0
+      ]
+    },
+    "first_query": {
+      "n": 400,
+      "baseline_receiver_acc": 0.6425,
+      "j_grid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "match_composed": [
+        0.04,
+        0.05,
+        0.035,
+        0.06,
+        0.0625,
+        0.185,
+        0.355
+      ],
+      "match_pure_A": [
+        0.0875,
+        0.095,
+        0.0925,
+        0.1075,
+        0.1325,
+        0.185,
+        0.355
+      ],
+      "match_pure_B": [
+        0.3375,
+        0.0425,
+        0.0475,
+        0.0425,
+        0.045,
+        0.045,
+        0.06
+      ],
+      "match_composed_distinct": [
+        0.030555555555555555,
+        0.047619047619047616,
+        0.029850746268656716,
+        0.05142857142857143,
+        0.06611570247933884,
+        null,
+        null
+      ],
+      "distinct_counts": [
+        360.0,
+        357.0,
+        335.0,
+        350.0,
+        363.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "baseline_receiver_acc": 0.819,
+  "j_grid": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "match_composed": [
+    0.238,
+    0.26,
+    0.265,
+    0.266,
+    0.256,
+    0.5005,
+    0.637
+  ],
+  "match_pure_A": [
+    0.3235,
+    0.3515,
+    0.3615,
+    0.3865,
+    0.4185,
+    0.5005,
+    0.637
+  ],
+  "match_pure_B": [
+    0.689,
+    0.268,
+    0.2615,
+    0.26,
+    0.264,
+    0.244,
+    0.2315
+  ],
+  "match_composed_unambiguous": [
+    0.008438818565400843,
+    0.05128205128205128,
+    0.046413502109704644,
+    0.07142857142857142,
+    0.045627376425855515,
+    null,
+    null
+  ],
+  "unambiguous_counts": [
+    237.0,
+    234.0,
+    237.0,
+    238.0,
+    263.0,
+    0.0,
+    0.0
+  ],
+  "counts": [
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+  ],
+  "mode": "compose",
+  "config_name": "ouro-4x8",
+  "checkpoint": "<storage>/local_archive_20260916/h1_clean_sweep_runs/ouro-4x8_s46/checkpoint.pt",
+  "random_init": false,
+  "patch_answer_digit": true,
+  "no_timestep_embedding": false,
+  "use_nope": false,
+  "eval_seed": 20260727,
+  "full_answer_protocol": "greedy_answer_tokens_plus_delimiter_v1 (earlier answers teacher forced; equals teacher_forced_answer_tokens_plus_delimiter_v1 per target)"
+}

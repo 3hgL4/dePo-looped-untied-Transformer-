@@ -1,0 +1,13 @@
+{
+  "dim": 256,
+  "n_heads": 8,
+  "causal": true,
+  "feed_forward_multiple_of": 64,
+  "norm_eps": 1e-05,
+  "vocab_size": 18,
+  "max_sequence_len": 384,
+  "pad_token_idx": 1,
+  "model_type": "standard",
+  "n_layers": 32,
+  "use_layer_vectors": false
+}

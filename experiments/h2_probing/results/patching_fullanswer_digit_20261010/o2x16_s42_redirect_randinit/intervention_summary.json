@@ -1,0 +1,234 @@
+{
+  "n_records": 1500,
+  "H": 8,
+  "K": 16,
+  "full_answer": {
+    "all": {
+      "n": 1500,
+      "baseline_receiver_acc": 0.0,
+      "j_grid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "match_composed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_pure_A": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_pure_B": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_composed_distinct": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "distinct_counts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "first_query": {
+      "n": 300,
+      "baseline_receiver_acc": 0.0,
+      "j_grid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "match_composed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_pure_A": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_pure_B": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "match_composed_distinct": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "distinct_counts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "baseline_receiver_acc": 0.068,
+  "j_grid": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "match_composed": [
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666
+  ],
+  "match_pure_A": [
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666,
+    0.06466666666666666
+  ],
+  "match_pure_B": [
+    0.068,
+    0.068,
+    0.068,
+    0.068,
+    0.068,
+    0.068,
+    0.068,
+    0.068,
+    0.068
+  ],
+  "match_composed_unambiguous": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "unambiguous_counts": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "counts": [
+    1500.0,
+    1500.0,
+    1500.0,
+    1500.0,
+    1500.0,
+    1500.0,
+    1500.0,
+    1500.0,
+    1500.0
+  ],
+  "mode": "redirect",
+  "config_name": "ouro-2x16",
+  "checkpoint": "<storage>/h1_clean_sweep/runs/ouro-2x16_s42/checkpoint.pt",
+  "random_init": true,
+  "patch_answer_digit": true,
+  "no_timestep_embedding": false,
+  "use_nope": false,
+  "eval_seed": 20260727,
+  "full_answer_protocol": "greedy_answer_tokens_plus_delimiter_v1 (earlier answers teacher forced; equals teacher_forced_answer_tokens_plus_delimiter_v1 per target)"
+}

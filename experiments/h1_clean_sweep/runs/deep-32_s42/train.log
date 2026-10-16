@@ -1,0 +1,534 @@
+=== Training deep-32 seed=42 ===
+  total_steps=100000  eval_interval=4000
+  lr=0.001 wd=0.01 warmup=1000  cosine to 1.0e-04
+  H ∈ [1, 15]  N=16  M=5
+step=      1  loss=3.1472  lr=1.00e-06  H_max= 1  sps=0.0  elapsed=0.0min
+step=    200  loss=0.7507  lr=2.00e-04  H_max= 1  sps=5.1  elapsed=0.7min
+step=    400  loss=0.6676  lr=4.00e-04  H_max= 1  sps=5.1  elapsed=1.3min
+step=    600  loss=0.5943  lr=6.00e-04  H_max= 1  sps=5.1  elapsed=2.0min
+step=    800  loss=0.5927  lr=8.00e-04  H_max= 1  sps=5.1  elapsed=2.6min
+step=   1000  loss=0.5828  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=3.3min
+step=   1200  loss=0.5799  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=3.9min
+step=   1400  loss=0.5746  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=4.6min
+step=   1600  loss=0.5727  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=5.2min
+step=   1800  loss=0.5670  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=5.9min
+step=   2000  loss=0.5604  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=6.5min
+step=   2200  loss=0.5546  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=7.2min
+step=   2400  loss=0.5034  lr=1.00e-03  H_max= 1  sps=5.1  elapsed=7.8min
+step=   2600  loss=0.4945  lr=9.99e-04  H_max= 1  sps=5.1  elapsed=8.5min
+step=   2800  loss=0.4937  lr=9.99e-04  H_max= 1  sps=5.1  elapsed=9.1min
+step=   3000  loss=0.4941  lr=9.99e-04  H_max= 1  sps=5.1  elapsed=9.8min
+step=   3200  loss=0.4945  lr=9.99e-04  H_max= 1  sps=5.1  elapsed=10.4min
+step=   3400  loss=0.4956  lr=9.99e-04  H_max= 1  sps=5.1  elapsed=11.1min
+step=   3600  loss=0.4929  lr=9.98e-04  H_max= 1  sps=5.1  elapsed=11.7min
+step=   3800  loss=0.4958  lr=9.98e-04  H_max= 1  sps=5.1  elapsed=12.4min
+step=   4000  loss=0.4948  lr=9.98e-04  H_max= 1  sps=5.1  elapsed=13.0min
+  EVAL step=4000  H=1: 1.000  H=7: 0.041  H=15: 0.060  MLRD@0.8=1
+step=   4200  loss=0.4944  lr=9.98e-04  H_max= 1  sps=4.4  elapsed=13.8min
+step=   4400  loss=0.4954  lr=9.97e-04  H_max= 1  sps=5.1  elapsed=14.4min
+step=   4600  loss=0.4937  lr=9.97e-04  H_max= 1  sps=5.1  elapsed=15.1min
+step=   4800  loss=0.4941  lr=9.97e-04  H_max= 1  sps=5.1  elapsed=15.7min
+step=   5000  loss=0.4941  lr=9.96e-04  H_max= 1  sps=5.1  elapsed=16.4min
+step=   5200  loss=0.4943  lr=9.96e-04  H_max= 1  sps=5.1  elapsed=17.1min
+step=   5400  loss=0.4947  lr=9.96e-04  H_max= 1  sps=5.1  elapsed=17.7min
+step=   5600  loss=0.4936  lr=9.95e-04  H_max= 1  sps=5.1  elapsed=18.4min
+step=   5800  loss=0.4936  lr=9.95e-04  H_max= 1  sps=5.1  elapsed=19.0min
+step=   6000  loss=0.4938  lr=9.94e-04  H_max= 1  sps=5.1  elapsed=19.7min
+step=   6200  loss=0.4942  lr=9.94e-04  H_max= 1  sps=5.1  elapsed=20.3min
+step=   6400  loss=0.4928  lr=9.93e-04  H_max= 1  sps=5.1  elapsed=21.0min
+step=   6600  loss=0.4932  lr=9.93e-04  H_max= 1  sps=5.1  elapsed=21.6min
+step=   6800  loss=0.4937  lr=9.92e-04  H_max= 1  sps=5.1  elapsed=22.3min
+step=   7000  loss=0.4933  lr=9.92e-04  H_max= 1  sps=5.1  elapsed=22.9min
+step=   7200  loss=0.4930  lr=9.91e-04  H_max= 1  sps=5.1  elapsed=23.6min
+step=   7400  loss=0.4936  lr=9.91e-04  H_max= 1  sps=5.1  elapsed=24.2min
+step=   7600  loss=0.4929  lr=9.90e-04  H_max= 1  sps=5.1  elapsed=24.9min
+step=   7800  loss=0.4940  lr=9.90e-04  H_max= 1  sps=5.1  elapsed=25.5min
+step=   8000  loss=0.5365  lr=9.89e-04  H_max= 2  sps=5.1  elapsed=26.2min
+  EVAL step=8000  H=1: 1.000  H=7: 0.251  H=15: 0.124  MLRD@0.8=1
+step=   8200  loss=0.5375  lr=9.88e-04  H_max= 2  sps=4.4  elapsed=26.9min
+step=   8400  loss=0.5356  lr=9.88e-04  H_max= 2  sps=5.1  elapsed=27.6min
+step=   8600  loss=0.5348  lr=9.87e-04  H_max= 2  sps=5.1  elapsed=28.2min
+step=   8800  loss=0.5349  lr=9.86e-04  H_max= 2  sps=5.1  elapsed=28.9min
+step=   9000  loss=0.5348  lr=9.86e-04  H_max= 2  sps=5.1  elapsed=29.5min
+step=   9200  loss=0.5347  lr=9.85e-04  H_max= 2  sps=5.1  elapsed=30.2min
+step=   9400  loss=0.5351  lr=9.84e-04  H_max= 2  sps=5.1  elapsed=30.8min
+step=   9600  loss=0.5486  lr=9.83e-04  H_max= 3  sps=5.1  elapsed=31.5min
+step=   9800  loss=0.5478  lr=9.83e-04  H_max= 3  sps=5.1  elapsed=32.1min
+step=  10000  loss=0.5476  lr=9.82e-04  H_max= 3  sps=5.1  elapsed=32.8min
+step=  10200  loss=0.5519  lr=9.81e-04  H_max= 3  sps=5.1  elapsed=33.4min
+step=  10400  loss=0.5492  lr=9.80e-04  H_max= 3  sps=5.1  elapsed=34.1min
+step=  10600  loss=0.5483  lr=9.79e-04  H_max= 3  sps=5.1  elapsed=34.7min
+step=  10800  loss=0.5478  lr=9.78e-04  H_max= 3  sps=5.1  elapsed=35.4min
+step=  11000  loss=0.5492  lr=9.78e-04  H_max= 3  sps=5.1  elapsed=36.0min
+step=  11200  loss=0.5554  lr=9.77e-04  H_max= 4  sps=5.1  elapsed=36.7min
+step=  11400  loss=0.5582  lr=9.76e-04  H_max= 4  sps=5.1  elapsed=37.4min
+step=  11600  loss=0.5549  lr=9.75e-04  H_max= 4  sps=5.1  elapsed=38.0min
+step=  11800  loss=0.5583  lr=9.74e-04  H_max= 4  sps=5.1  elapsed=38.7min
+step=  12000  loss=0.5547  lr=9.73e-04  H_max= 4  sps=5.1  elapsed=39.3min
+  EVAL step=12000  H=1: 1.000  H=7: 0.353  H=15: 0.092  MLRD@0.8=1
+step=  12200  loss=0.5565  lr=9.72e-04  H_max= 4  sps=4.4  elapsed=40.1min
+step=  12400  loss=0.5625  lr=9.71e-04  H_max= 4  sps=5.1  elapsed=40.7min
+step=  12600  loss=0.5568  lr=9.70e-04  H_max= 4  sps=5.1  elapsed=41.4min
+step=  12800  loss=0.5622  lr=9.69e-04  H_max= 5  sps=5.1  elapsed=42.0min
+step=  13000  loss=0.5592  lr=9.68e-04  H_max= 5  sps=5.1  elapsed=42.7min
+step=  13200  loss=0.5597  lr=9.67e-04  H_max= 5  sps=5.1  elapsed=43.3min
+step=  13400  loss=0.5626  lr=9.66e-04  H_max= 5  sps=5.1  elapsed=44.0min
+step=  13600  loss=0.5615  lr=9.65e-04  H_max= 5  sps=5.1  elapsed=44.6min
+step=  13800  loss=0.5599  lr=9.63e-04  H_max= 5  sps=5.1  elapsed=45.3min
+step=  14000  loss=0.5605  lr=9.62e-04  H_max= 5  sps=5.1  elapsed=45.9min
+step=  14200  loss=0.5618  lr=9.61e-04  H_max= 5  sps=5.1  elapsed=46.6min
+step=  14400  loss=0.5720  lr=9.60e-04  H_max= 6  sps=5.1  elapsed=47.2min
+step=  14600  loss=0.5646  lr=9.59e-04  H_max= 6  sps=5.1  elapsed=47.9min
+step=  14800  loss=0.5645  lr=9.58e-04  H_max= 6  sps=5.1  elapsed=48.5min
+step=  15000  loss=0.5640  lr=9.56e-04  H_max= 6  sps=5.1  elapsed=49.2min
+step=  15200  loss=0.5616  lr=9.55e-04  H_max= 6  sps=5.1  elapsed=49.8min
+step=  15400  loss=0.5633  lr=9.54e-04  H_max= 6  sps=5.1  elapsed=50.5min
+step=  15600  loss=0.5648  lr=9.53e-04  H_max= 6  sps=5.1  elapsed=51.1min
+step=  15800  loss=0.5618  lr=9.51e-04  H_max= 6  sps=5.1  elapsed=51.8min
+step=  16000  loss=0.5639  lr=9.50e-04  H_max= 6  sps=5.1  elapsed=52.4min
+  EVAL step=16000  H=1: 1.000  H=7: 0.347  H=15: 0.111  MLRD@0.8=1
+step=  16200  loss=0.5661  lr=9.49e-04  H_max= 7  sps=4.4  elapsed=53.2min
+step=  16400  loss=0.5682  lr=9.47e-04  H_max= 7  sps=5.1  elapsed=53.8min
+step=  16600  loss=0.5636  lr=9.46e-04  H_max= 7  sps=5.1  elapsed=54.5min
+step=  16800  loss=0.5662  lr=9.45e-04  H_max= 7  sps=5.1  elapsed=55.1min
+step=  17000  loss=0.5661  lr=9.43e-04  H_max= 7  sps=5.1  elapsed=55.8min
+step=  17200  loss=0.5646  lr=9.42e-04  H_max= 7  sps=5.1  elapsed=56.4min
+step=  17400  loss=0.5656  lr=9.40e-04  H_max= 7  sps=5.1  elapsed=57.1min
+step=  17600  loss=0.5653  lr=9.39e-04  H_max= 7  sps=5.1  elapsed=57.7min
+step=  17800  loss=0.5690  lr=9.38e-04  H_max= 8  sps=5.1  elapsed=58.4min
+step=  18000  loss=0.5658  lr=9.36e-04  H_max= 8  sps=5.1  elapsed=59.1min
+step=  18200  loss=0.5684  lr=9.35e-04  H_max= 8  sps=5.1  elapsed=59.7min
+step=  18400  loss=0.5668  lr=9.33e-04  H_max= 8  sps=5.1  elapsed=60.4min
+step=  18600  loss=0.5699  lr=9.32e-04  H_max= 8  sps=5.1  elapsed=61.0min
+step=  18800  loss=0.5675  lr=9.30e-04  H_max= 8  sps=5.1  elapsed=61.7min
+step=  19000  loss=0.5680  lr=9.29e-04  H_max= 8  sps=5.1  elapsed=62.3min
+step=  19200  loss=0.5684  lr=9.27e-04  H_max= 8  sps=5.1  elapsed=63.0min
+step=  19400  loss=0.5707  lr=9.25e-04  H_max= 9  sps=5.1  elapsed=63.6min
+step=  19600  loss=0.5723  lr=9.24e-04  H_max= 9  sps=5.1  elapsed=64.3min
+step=  19800  loss=0.5698  lr=9.22e-04  H_max= 9  sps=5.1  elapsed=64.9min
+step=  20000  loss=0.5700  lr=9.21e-04  H_max= 9  sps=5.1  elapsed=65.6min
+  EVAL step=20000  H=1: 1.000  H=7: 0.343  H=15: 0.156  MLRD@0.8=1
+step=  20200  loss=0.5697  lr=9.19e-04  H_max= 9  sps=4.4  elapsed=66.3min
+step=  20400  loss=0.5689  lr=9.17e-04  H_max= 9  sps=5.1  elapsed=67.0min
+step=  20600  loss=0.5684  lr=9.16e-04  H_max= 9  sps=5.1  elapsed=67.6min
+step=  20800  loss=0.5700  lr=9.14e-04  H_max= 9  sps=5.1  elapsed=68.3min
+step=  21000  loss=0.5808  lr=9.12e-04  H_max=10  sps=5.1  elapsed=68.9min
+step=  21200  loss=0.5711  lr=9.11e-04  H_max=10  sps=5.1  elapsed=69.6min
+step=  21400  loss=0.5687  lr=9.09e-04  H_max=10  sps=5.1  elapsed=70.2min
+step=  21600  loss=0.5682  lr=9.07e-04  H_max=10  sps=5.1  elapsed=70.9min
+step=  21800  loss=0.5692  lr=9.05e-04  H_max=10  sps=5.1  elapsed=71.5min
+step=  22000  loss=0.5696  lr=9.04e-04  H_max=10  sps=5.1  elapsed=72.2min
+step=  22200  loss=0.5680  lr=9.02e-04  H_max=10  sps=5.1  elapsed=72.8min
+step=  22400  loss=0.5695  lr=9.00e-04  H_max=10  sps=5.1  elapsed=73.5min
+step=  22600  loss=0.5678  lr=8.98e-04  H_max=10  sps=5.1  elapsed=74.1min
+step=  22800  loss=0.5687  lr=8.97e-04  H_max=11  sps=5.1  elapsed=74.8min
+step=  23000  loss=0.5679  lr=8.95e-04  H_max=11  sps=5.1  elapsed=75.4min
+step=  23200  loss=0.5706  lr=8.93e-04  H_max=11  sps=5.1  elapsed=76.1min
+step=  23400  loss=0.5694  lr=8.91e-04  H_max=11  sps=5.1  elapsed=76.8min
+step=  23600  loss=0.5710  lr=8.89e-04  H_max=11  sps=5.1  elapsed=77.4min
+step=  23800  loss=0.5689  lr=8.87e-04  H_max=11  sps=5.1  elapsed=78.1min
+step=  24000  loss=0.5690  lr=8.85e-04  H_max=11  sps=5.1  elapsed=78.7min
+  EVAL step=24000  H=1: 1.000  H=7: 0.362  H=15: 0.313  MLRD@0.8=1
+step=  24200  loss=0.5665  lr=8.83e-04  H_max=11  sps=4.4  elapsed=79.5min
+step=  24400  loss=0.5688  lr=8.82e-04  H_max=12  sps=5.1  elapsed=80.1min
+step=  24600  loss=0.5668  lr=8.80e-04  H_max=12  sps=5.1  elapsed=80.8min
+step=  24800  loss=0.5680  lr=8.78e-04  H_max=12  sps=5.1  elapsed=81.4min
+step=  25000  loss=0.5696  lr=8.76e-04  H_max=12  sps=5.1  elapsed=82.1min
+step=  25200  loss=0.5694  lr=8.74e-04  H_max=12  sps=5.1  elapsed=82.7min
+step=  25400  loss=0.5680  lr=8.72e-04  H_max=12  sps=5.1  elapsed=83.4min
+step=  25600  loss=0.5700  lr=8.70e-04  H_max=12  sps=5.1  elapsed=84.0min
+step=  25800  loss=0.5692  lr=8.68e-04  H_max=12  sps=5.1  elapsed=84.7min
+step=  26000  loss=0.5678  lr=8.66e-04  H_max=13  sps=5.1  elapsed=85.3min
+step=  26200  loss=0.5682  lr=8.64e-04  H_max=13  sps=5.1  elapsed=86.0min
+step=  26400  loss=0.5662  lr=8.62e-04  H_max=13  sps=5.1  elapsed=86.6min
+step=  26600  loss=0.5679  lr=8.60e-04  H_max=13  sps=5.1  elapsed=87.3min
+step=  26800  loss=0.5684  lr=8.57e-04  H_max=13  sps=5.1  elapsed=87.9min
+step=  27000  loss=0.5689  lr=8.55e-04  H_max=13  sps=5.1  elapsed=88.6min
+step=  27200  loss=0.5681  lr=8.53e-04  H_max=13  sps=5.1  elapsed=89.2min
+step=  27400  loss=0.5696  lr=8.51e-04  H_max=13  sps=5.1  elapsed=89.9min
+step=  27600  loss=0.5707  lr=8.49e-04  H_max=14  sps=5.1  elapsed=90.5min
+step=  27800  loss=0.5698  lr=8.47e-04  H_max=14  sps=5.1  elapsed=91.2min
+step=  28000  loss=0.5675  lr=8.45e-04  H_max=14  sps=5.1  elapsed=91.9min
+  EVAL step=28000  H=1: 1.000  H=7: 0.341  H=15: 0.306  MLRD@0.8=1
+step=  28200  loss=0.5692  lr=8.43e-04  H_max=14  sps=4.4  elapsed=92.6min
+step=  28400  loss=0.5685  lr=8.40e-04  H_max=14  sps=5.1  elapsed=93.3min
+step=  28600  loss=0.5688  lr=8.38e-04  H_max=14  sps=5.1  elapsed=93.9min
+step=  28800  loss=0.5680  lr=8.36e-04  H_max=14  sps=5.1  elapsed=94.6min
+step=  29000  loss=0.5676  lr=8.34e-04  H_max=14  sps=5.1  elapsed=95.2min
+step=  29200  loss=0.5695  lr=8.32e-04  H_max=15  sps=5.1  elapsed=95.9min
+step=  29400  loss=0.5689  lr=8.29e-04  H_max=15  sps=5.1  elapsed=96.5min
+step=  29600  loss=0.5695  lr=8.27e-04  H_max=15  sps=5.1  elapsed=97.2min
+step=  29800  loss=0.5663  lr=8.25e-04  H_max=15  sps=5.1  elapsed=97.8min
+step=  30000  loss=0.5662  lr=8.23e-04  H_max=15  sps=5.1  elapsed=98.5min
+step=  30200  loss=0.5690  lr=8.20e-04  H_max=15  sps=5.1  elapsed=99.1min
+step=  30400  loss=0.5710  lr=8.18e-04  H_max=15  sps=5.1  elapsed=99.8min
+step=  30600  loss=0.5694  lr=8.16e-04  H_max=15  sps=5.1  elapsed=100.4min
+step=  30800  loss=0.5674  lr=8.13e-04  H_max=15  sps=5.1  elapsed=101.1min
+step=  31000  loss=0.5670  lr=8.11e-04  H_max=15  sps=5.1  elapsed=101.7min
+step=  31200  loss=0.5689  lr=8.09e-04  H_max=15  sps=5.1  elapsed=102.4min
+step=  31400  loss=0.5678  lr=8.06e-04  H_max=15  sps=5.1  elapsed=103.0min
+step=  31600  loss=0.5694  lr=8.04e-04  H_max=15  sps=5.1  elapsed=103.7min
+step=  31800  loss=0.5685  lr=8.02e-04  H_max=15  sps=5.1  elapsed=104.3min
+step=  32000  loss=0.5689  lr=7.99e-04  H_max=15  sps=5.1  elapsed=105.0min
+  EVAL step=32000  H=1: 1.000  H=7: 0.323  H=15: 0.340  MLRD@0.8=1
+step=  32200  loss=0.5680  lr=7.97e-04  H_max=15  sps=4.4  elapsed=105.8min
+step=  32400  loss=0.5687  lr=7.94e-04  H_max=15  sps=5.1  elapsed=106.4min
+step=  32600  loss=0.5701  lr=7.92e-04  H_max=15  sps=5.1  elapsed=107.1min
+step=  32800  loss=0.5692  lr=7.90e-04  H_max=15  sps=5.1  elapsed=107.7min
+step=  33000  loss=0.5683  lr=7.87e-04  H_max=15  sps=5.1  elapsed=108.4min
+step=  33200  loss=0.5676  lr=7.85e-04  H_max=15  sps=5.1  elapsed=109.0min
+step=  33400  loss=0.5663  lr=7.82e-04  H_max=15  sps=5.1  elapsed=109.7min
+step=  33600  loss=0.5696  lr=7.80e-04  H_max=15  sps=5.1  elapsed=110.3min
+step=  33800  loss=0.5669  lr=7.77e-04  H_max=15  sps=5.1  elapsed=111.0min
+step=  34000  loss=0.5670  lr=7.75e-04  H_max=15  sps=5.1  elapsed=111.6min
+step=  34200  loss=0.5698  lr=7.73e-04  H_max=15  sps=5.1  elapsed=112.3min
+step=  34400  loss=0.5673  lr=7.70e-04  H_max=15  sps=5.1  elapsed=112.9min
+step=  34600  loss=0.5671  lr=7.68e-04  H_max=15  sps=5.1  elapsed=113.6min
+step=  34800  loss=0.5691  lr=7.65e-04  H_max=15  sps=5.1  elapsed=114.2min
+step=  35000  loss=0.5683  lr=7.63e-04  H_max=15  sps=5.1  elapsed=114.9min
+step=  35200  loss=0.5686  lr=7.60e-04  H_max=15  sps=5.1  elapsed=115.5min
+step=  35400  loss=0.5676  lr=7.57e-04  H_max=15  sps=5.1  elapsed=116.2min
+step=  35600  loss=0.5687  lr=7.55e-04  H_max=15  sps=5.1  elapsed=116.8min
+step=  35800  loss=0.5684  lr=7.52e-04  H_max=15  sps=5.1  elapsed=117.5min
+step=  36000  loss=0.5685  lr=7.50e-04  H_max=15  sps=5.1  elapsed=118.1min
+  EVAL step=36000  H=1: 1.000  H=7: 0.341  H=15: 0.334  MLRD@0.8=1
+step=  36200  loss=0.5686  lr=7.47e-04  H_max=15  sps=4.4  elapsed=118.9min
+step=  36400  loss=0.5665  lr=7.45e-04  H_max=15  sps=5.1  elapsed=119.6min
+step=  36600  loss=0.5700  lr=7.42e-04  H_max=15  sps=5.1  elapsed=120.2min
+step=  36800  loss=0.5687  lr=7.40e-04  H_max=15  sps=5.1  elapsed=120.9min
+step=  37000  loss=0.5695  lr=7.37e-04  H_max=15  sps=5.1  elapsed=121.5min
+step=  37200  loss=0.5685  lr=7.34e-04  H_max=15  sps=5.1  elapsed=122.2min
+step=  37400  loss=0.5672  lr=7.32e-04  H_max=15  sps=5.1  elapsed=122.8min
+step=  37600  loss=0.5680  lr=7.29e-04  H_max=15  sps=5.1  elapsed=123.5min
+step=  37800  loss=0.5659  lr=7.26e-04  H_max=15  sps=5.1  elapsed=124.1min
+step=  38000  loss=0.5688  lr=7.24e-04  H_max=15  sps=5.1  elapsed=124.8min
+step=  38200  loss=0.5658  lr=7.21e-04  H_max=15  sps=5.1  elapsed=125.4min
+step=  38400  loss=0.5686  lr=7.19e-04  H_max=15  sps=5.1  elapsed=126.1min
+step=  38600  loss=0.5686  lr=7.16e-04  H_max=15  sps=5.1  elapsed=126.7min
+step=  38800  loss=0.5677  lr=7.13e-04  H_max=15  sps=5.1  elapsed=127.4min
+step=  39000  loss=0.5674  lr=7.11e-04  H_max=15  sps=5.1  elapsed=128.0min
+step=  39200  loss=0.5663  lr=7.08e-04  H_max=15  sps=5.1  elapsed=128.7min
+step=  39400  loss=0.5675  lr=7.05e-04  H_max=15  sps=5.1  elapsed=129.3min
+step=  39600  loss=0.5667  lr=7.03e-04  H_max=15  sps=5.1  elapsed=130.0min
+step=  39800  loss=0.5682  lr=7.00e-04  H_max=15  sps=5.1  elapsed=130.6min
+step=  40000  loss=0.5697  lr=6.97e-04  H_max=15  sps=5.1  elapsed=131.3min
+  EVAL step=40000  H=1: 0.998  H=7: 0.345  H=15: 0.347  MLRD@0.8=1
+step=  40200  loss=0.5684  lr=6.94e-04  H_max=15  sps=4.4  elapsed=132.1min
+step=  40400  loss=0.5698  lr=6.92e-04  H_max=15  sps=5.1  elapsed=132.7min
+step=  40600  loss=0.5681  lr=6.89e-04  H_max=15  sps=5.1  elapsed=133.4min
+step=  40800  loss=0.5695  lr=6.86e-04  H_max=15  sps=5.1  elapsed=134.0min
+step=  41000  loss=0.5672  lr=6.84e-04  H_max=15  sps=5.1  elapsed=134.7min
+step=  41200  loss=0.5681  lr=6.81e-04  H_max=15  sps=5.1  elapsed=135.3min
+step=  41400  loss=0.5675  lr=6.78e-04  H_max=15  sps=5.1  elapsed=136.0min
+step=  41600  loss=0.5691  lr=6.75e-04  H_max=15  sps=5.1  elapsed=136.6min
+step=  41800  loss=0.5688  lr=6.73e-04  H_max=15  sps=5.1  elapsed=137.3min
+step=  42000  loss=0.5673  lr=6.70e-04  H_max=15  sps=5.1  elapsed=138.0min
+step=  42200  loss=0.5674  lr=6.67e-04  H_max=15  sps=5.1  elapsed=138.6min
+step=  42400  loss=0.5667  lr=6.64e-04  H_max=15  sps=5.1  elapsed=139.3min
+step=  42600  loss=0.5670  lr=6.62e-04  H_max=15  sps=5.1  elapsed=139.9min
+step=  42800  loss=0.5685  lr=6.59e-04  H_max=15  sps=5.1  elapsed=140.6min
+step=  43000  loss=0.5691  lr=6.56e-04  H_max=15  sps=5.1  elapsed=141.2min
+step=  43200  loss=0.5671  lr=6.53e-04  H_max=15  sps=5.1  elapsed=141.9min
+step=  43400  loss=0.5654  lr=6.51e-04  H_max=15  sps=5.1  elapsed=142.5min
+step=  43600  loss=0.5665  lr=6.48e-04  H_max=15  sps=5.1  elapsed=143.2min
+step=  43800  loss=0.5654  lr=6.45e-04  H_max=15  sps=5.1  elapsed=143.8min
+step=  44000  loss=0.5677  lr=6.42e-04  H_max=15  sps=5.1  elapsed=144.5min
+  EVAL step=44000  H=1: 1.000  H=7: 0.385  H=15: 0.385  MLRD@0.8=1
+step=  44200  loss=0.5672  lr=6.39e-04  H_max=15  sps=4.4  elapsed=145.3min
+step=  44400  loss=0.5685  lr=6.37e-04  H_max=15  sps=5.1  elapsed=145.9min
+step=  44600  loss=0.5668  lr=6.34e-04  H_max=15  sps=5.1  elapsed=146.6min
+step=  44800  loss=0.5684  lr=6.31e-04  H_max=15  sps=5.1  elapsed=147.2min
+step=  45000  loss=0.5669  lr=6.28e-04  H_max=15  sps=5.1  elapsed=147.9min
+step=  45200  loss=0.5667  lr=6.25e-04  H_max=15  sps=5.1  elapsed=148.5min
+step=  45400  loss=0.5673  lr=6.23e-04  H_max=15  sps=5.1  elapsed=149.2min
+step=  45600  loss=0.5681  lr=6.20e-04  H_max=15  sps=5.1  elapsed=149.8min
+step=  45800  loss=0.5680  lr=6.17e-04  H_max=15  sps=5.1  elapsed=150.5min
+step=  46000  loss=0.5678  lr=6.14e-04  H_max=15  sps=5.1  elapsed=151.1min
+step=  46200  loss=0.5652  lr=6.11e-04  H_max=15  sps=5.1  elapsed=151.8min
+step=  46400  loss=0.5673  lr=6.08e-04  H_max=15  sps=5.1  elapsed=152.4min
+step=  46600  loss=0.5661  lr=6.06e-04  H_max=15  sps=5.1  elapsed=153.1min
+step=  46800  loss=0.5674  lr=6.03e-04  H_max=15  sps=5.1  elapsed=153.8min
+step=  47000  loss=0.5682  lr=6.00e-04  H_max=15  sps=5.1  elapsed=154.4min
+step=  47200  loss=0.5659  lr=5.97e-04  H_max=15  sps=5.1  elapsed=155.1min
+step=  47400  loss=0.5661  lr=5.94e-04  H_max=15  sps=5.1  elapsed=155.7min
+step=  47600  loss=0.5662  lr=5.91e-04  H_max=15  sps=5.1  elapsed=156.4min
+step=  47800  loss=0.5670  lr=5.89e-04  H_max=15  sps=5.1  elapsed=157.0min
+step=  48000  loss=0.5667  lr=5.86e-04  H_max=15  sps=5.1  elapsed=157.7min
+  EVAL step=48000  H=1: 1.000  H=7: 0.373  H=15: 0.338  MLRD@0.8=1
+step=  48200  loss=0.5679  lr=5.83e-04  H_max=15  sps=4.4  elapsed=158.4min
+step=  48400  loss=0.5683  lr=5.80e-04  H_max=15  sps=5.1  elapsed=159.1min
+step=  48600  loss=0.5668  lr=5.77e-04  H_max=15  sps=5.1  elapsed=159.8min
+step=  48800  loss=0.5693  lr=5.74e-04  H_max=15  sps=5.1  elapsed=160.4min
+step=  49000  loss=0.5663  lr=5.71e-04  H_max=15  sps=5.1  elapsed=161.1min
+step=  49200  loss=0.5652  lr=5.69e-04  H_max=15  sps=5.1  elapsed=161.7min
+step=  49400  loss=0.5686  lr=5.66e-04  H_max=15  sps=5.1  elapsed=162.4min
+step=  49600  loss=0.5659  lr=5.63e-04  H_max=15  sps=5.1  elapsed=163.0min
+step=  49800  loss=0.5662  lr=5.60e-04  H_max=15  sps=5.1  elapsed=163.7min
+step=  50000  loss=0.5671  lr=5.57e-04  H_max=15  sps=5.1  elapsed=164.3min
+step=  50200  loss=0.5675  lr=5.54e-04  H_max=15  sps=5.1  elapsed=165.0min
+step=  50400  loss=0.5672  lr=5.51e-04  H_max=15  sps=5.1  elapsed=165.6min
+step=  50600  loss=0.5660  lr=5.49e-04  H_max=15  sps=5.1  elapsed=166.3min
+step=  50800  loss=0.5669  lr=5.46e-04  H_max=15  sps=5.1  elapsed=166.9min
+step=  51000  loss=0.5657  lr=5.43e-04  H_max=15  sps=5.1  elapsed=167.6min
+step=  51200  loss=0.5676  lr=5.40e-04  H_max=15  sps=5.1  elapsed=168.3min
+step=  51400  loss=0.5671  lr=5.37e-04  H_max=15  sps=5.1  elapsed=168.9min
+step=  51600  loss=0.5670  lr=5.34e-04  H_max=15  sps=5.1  elapsed=169.6min
+step=  51800  loss=0.5679  lr=5.31e-04  H_max=15  sps=5.1  elapsed=170.2min
+step=  52000  loss=0.5667  lr=5.29e-04  H_max=15  sps=5.1  elapsed=170.9min
+  EVAL step=52000  H=1: 1.000  H=7: 0.351  H=15: 0.360  MLRD@0.8=1
+step=  52200  loss=0.5655  lr=5.26e-04  H_max=15  sps=4.4  elapsed=171.6min
+step=  52400  loss=0.5680  lr=5.23e-04  H_max=15  sps=5.1  elapsed=172.3min
+step=  52600  loss=0.5650  lr=5.20e-04  H_max=15  sps=5.1  elapsed=172.9min
+step=  52800  loss=0.5663  lr=5.17e-04  H_max=15  sps=5.1  elapsed=173.6min
+step=  53000  loss=0.5682  lr=5.14e-04  H_max=15  sps=5.1  elapsed=174.2min
+step=  53200  loss=0.5667  lr=5.11e-04  H_max=15  sps=5.1  elapsed=174.9min
+step=  53400  loss=0.5675  lr=5.09e-04  H_max=15  sps=5.1  elapsed=175.6min
+step=  53600  loss=0.5657  lr=5.06e-04  H_max=15  sps=5.1  elapsed=176.2min
+step=  53800  loss=0.5655  lr=5.03e-04  H_max=15  sps=5.1  elapsed=176.9min
+step=  54000  loss=0.5673  lr=5.00e-04  H_max=15  sps=5.1  elapsed=177.5min
+step=  54200  loss=0.5647  lr=4.97e-04  H_max=15  sps=5.1  elapsed=178.2min
+step=  54400  loss=0.5648  lr=4.94e-04  H_max=15  sps=5.1  elapsed=178.8min
+step=  54600  loss=0.5659  lr=4.92e-04  H_max=15  sps=5.1  elapsed=179.5min
+step=  54800  loss=0.5688  lr=4.89e-04  H_max=15  sps=5.1  elapsed=180.1min
+step=  55000  loss=0.5671  lr=4.86e-04  H_max=15  sps=5.1  elapsed=180.8min
+step=  55200  loss=0.5662  lr=4.83e-04  H_max=15  sps=5.1  elapsed=181.4min
+step=  55400  loss=0.5653  lr=4.80e-04  H_max=15  sps=5.1  elapsed=182.1min
+step=  55600  loss=0.5672  lr=4.77e-04  H_max=15  sps=5.1  elapsed=182.7min
+step=  55800  loss=0.5656  lr=4.75e-04  H_max=15  sps=5.1  elapsed=183.4min
+step=  56000  loss=0.5657  lr=4.72e-04  H_max=15  sps=5.1  elapsed=184.1min
+  EVAL step=56000  H=1: 1.000  H=7: 0.311  H=15: 0.375  MLRD@0.8=1
+step=  56200  loss=0.5684  lr=4.69e-04  H_max=15  sps=4.4  elapsed=184.8min
+step=  56400  loss=0.5673  lr=4.66e-04  H_max=15  sps=5.1  elapsed=185.5min
+step=  56600  loss=0.5665  lr=4.63e-04  H_max=15  sps=5.1  elapsed=186.1min
+step=  56800  loss=0.5668  lr=4.61e-04  H_max=15  sps=5.1  elapsed=186.8min
+step=  57000  loss=0.5645  lr=4.58e-04  H_max=15  sps=5.1  elapsed=187.4min
+step=  57200  loss=0.5662  lr=4.55e-04  H_max=15  sps=5.1  elapsed=188.1min
+step=  57400  loss=0.5675  lr=4.52e-04  H_max=15  sps=5.1  elapsed=188.7min
+step=  57600  loss=0.5654  lr=4.49e-04  H_max=15  sps=5.1  elapsed=189.4min
+step=  57800  loss=0.5643  lr=4.47e-04  H_max=15  sps=5.1  elapsed=190.0min
+step=  58000  loss=0.5674  lr=4.44e-04  H_max=15  sps=5.1  elapsed=190.7min
+step=  58200  loss=0.5679  lr=4.41e-04  H_max=15  sps=5.1  elapsed=191.4min
+step=  58400  loss=0.5668  lr=4.38e-04  H_max=15  sps=5.1  elapsed=192.0min
+step=  58600  loss=0.5668  lr=4.36e-04  H_max=15  sps=5.1  elapsed=192.7min
+step=  58800  loss=0.5655  lr=4.33e-04  H_max=15  sps=5.1  elapsed=193.3min
+step=  59000  loss=0.5666  lr=4.30e-04  H_max=15  sps=5.1  elapsed=194.0min
+step=  59200  loss=0.5672  lr=4.27e-04  H_max=15  sps=5.1  elapsed=194.6min
+step=  59400  loss=0.5656  lr=4.25e-04  H_max=15  sps=5.1  elapsed=195.3min
+step=  59600  loss=0.5665  lr=4.22e-04  H_max=15  sps=5.1  elapsed=195.9min
+step=  59800  loss=0.5642  lr=4.19e-04  H_max=15  sps=5.1  elapsed=196.6min
+step=  60000  loss=0.5649  lr=4.16e-04  H_max=15  sps=5.1  elapsed=197.2min
+  EVAL step=60000  H=1: 1.000  H=7: 0.381  H=15: 0.356  MLRD@0.8=1
+step=  60200  loss=0.5641  lr=4.14e-04  H_max=15  sps=4.4  elapsed=198.0min
+step=  60400  loss=0.5654  lr=4.11e-04  H_max=15  sps=5.1  elapsed=198.7min
+step=  60600  loss=0.5641  lr=4.08e-04  H_max=15  sps=5.1  elapsed=199.3min
+step=  60800  loss=0.5662  lr=4.06e-04  H_max=15  sps=5.1  elapsed=200.0min
+step=  61000  loss=0.5657  lr=4.03e-04  H_max=15  sps=5.1  elapsed=200.6min
+step=  61200  loss=0.5671  lr=4.00e-04  H_max=15  sps=5.1  elapsed=201.3min
+step=  61400  loss=0.5645  lr=3.97e-04  H_max=15  sps=5.1  elapsed=201.9min
+step=  61600  loss=0.5633  lr=3.95e-04  H_max=15  sps=5.1  elapsed=202.6min
+step=  61800  loss=0.5650  lr=3.92e-04  H_max=15  sps=5.1  elapsed=203.2min
+step=  62000  loss=0.5648  lr=3.89e-04  H_max=15  sps=5.1  elapsed=203.9min
+step=  62200  loss=0.5656  lr=3.87e-04  H_max=15  sps=5.1  elapsed=204.5min
+step=  62400  loss=0.5654  lr=3.84e-04  H_max=15  sps=5.1  elapsed=205.2min
+step=  62600  loss=0.5643  lr=3.81e-04  H_max=15  sps=5.1  elapsed=205.8min
+step=  62800  loss=0.5658  lr=3.79e-04  H_max=15  sps=5.1  elapsed=206.5min
+step=  63000  loss=0.5640  lr=3.76e-04  H_max=15  sps=5.1  elapsed=207.2min
+step=  63200  loss=0.5653  lr=3.74e-04  H_max=15  sps=5.1  elapsed=207.8min
+step=  63400  loss=0.5641  lr=3.71e-04  H_max=15  sps=5.1  elapsed=208.5min
+step=  63600  loss=0.5653  lr=3.68e-04  H_max=15  sps=5.1  elapsed=209.1min
+step=  63800  loss=0.5640  lr=3.66e-04  H_max=15  sps=5.1  elapsed=209.8min
+step=  64000  loss=0.5659  lr=3.63e-04  H_max=15  sps=5.1  elapsed=210.4min
+  EVAL step=64000  H=1: 1.000  H=7: 0.358  H=15: 0.338  MLRD@0.8=1
+step=  64200  loss=0.5650  lr=3.60e-04  H_max=15  sps=4.4  elapsed=211.2min
+step=  64400  loss=0.5652  lr=3.58e-04  H_max=15  sps=5.1  elapsed=211.8min
+step=  64600  loss=0.5656  lr=3.55e-04  H_max=15  sps=5.1  elapsed=212.5min
+step=  64800  loss=0.5648  lr=3.53e-04  H_max=15  sps=5.1  elapsed=213.1min
+step=  65000  loss=0.5654  lr=3.50e-04  H_max=15  sps=5.1  elapsed=213.8min
+step=  65200  loss=0.5641  lr=3.48e-04  H_max=15  sps=5.1  elapsed=214.5min
+step=  65400  loss=0.5656  lr=3.45e-04  H_max=15  sps=5.1  elapsed=215.1min
+step=  65600  loss=0.5645  lr=3.43e-04  H_max=15  sps=5.1  elapsed=215.8min
+step=  65800  loss=0.5660  lr=3.40e-04  H_max=15  sps=5.1  elapsed=216.4min
+step=  66000  loss=0.5639  lr=3.37e-04  H_max=15  sps=5.1  elapsed=217.1min
+step=  66200  loss=0.5647  lr=3.35e-04  H_max=15  sps=5.1  elapsed=217.7min
+step=  66400  loss=0.5644  lr=3.32e-04  H_max=15  sps=5.1  elapsed=218.4min
+step=  66600  loss=0.5667  lr=3.30e-04  H_max=15  sps=5.1  elapsed=219.0min
+step=  66800  loss=0.5657  lr=3.27e-04  H_max=15  sps=5.1  elapsed=219.7min
+step=  67000  loss=0.5646  lr=3.25e-04  H_max=15  sps=5.1  elapsed=220.3min
+step=  67200  loss=0.5658  lr=3.23e-04  H_max=15  sps=5.1  elapsed=221.0min
+step=  67400  loss=0.5654  lr=3.20e-04  H_max=15  sps=5.1  elapsed=221.7min
+step=  67600  loss=0.5645  lr=3.18e-04  H_max=15  sps=5.1  elapsed=222.3min
+step=  67800  loss=0.5666  lr=3.15e-04  H_max=15  sps=5.1  elapsed=223.0min
+step=  68000  loss=0.5639  lr=3.13e-04  H_max=15  sps=5.1  elapsed=223.6min
+  EVAL step=68000  H=1: 1.000  H=7: 0.353  H=15: 0.356  MLRD@0.8=1
+step=  68200  loss=0.5673  lr=3.10e-04  H_max=15  sps=4.4  elapsed=224.4min
+step=  68400  loss=0.5649  lr=3.08e-04  H_max=15  sps=5.1  elapsed=225.0min
+step=  68600  loss=0.5631  lr=3.06e-04  H_max=15  sps=5.1  elapsed=225.7min
+step=  68800  loss=0.5659  lr=3.03e-04  H_max=15  sps=5.1  elapsed=226.3min
+step=  69000  loss=0.5639  lr=3.01e-04  H_max=15  sps=5.1  elapsed=227.0min
+step=  69200  loss=0.5641  lr=2.98e-04  H_max=15  sps=5.1  elapsed=227.6min
+step=  69400  loss=0.5640  lr=2.96e-04  H_max=15  sps=5.1  elapsed=228.3min
+step=  69600  loss=0.5636  lr=2.94e-04  H_max=15  sps=5.1  elapsed=228.9min
+step=  69800  loss=0.5648  lr=2.91e-04  H_max=15  sps=5.1  elapsed=229.6min
+step=  70000  loss=0.5654  lr=2.89e-04  H_max=15  sps=5.1  elapsed=230.3min
+step=  70200  loss=0.5637  lr=2.87e-04  H_max=15  sps=5.1  elapsed=230.9min
+step=  70400  loss=0.5657  lr=2.84e-04  H_max=15  sps=5.1  elapsed=231.6min
+step=  70600  loss=0.5657  lr=2.82e-04  H_max=15  sps=5.1  elapsed=232.2min
+step=  70800  loss=0.5649  lr=2.80e-04  H_max=15  sps=5.1  elapsed=232.9min
+step=  71000  loss=0.5642  lr=2.77e-04  H_max=15  sps=5.1  elapsed=233.5min
+step=  71200  loss=0.5644  lr=2.75e-04  H_max=15  sps=5.1  elapsed=234.2min
+step=  71400  loss=0.5652  lr=2.73e-04  H_max=15  sps=5.1  elapsed=234.8min
+step=  71600  loss=0.5657  lr=2.71e-04  H_max=15  sps=5.1  elapsed=235.5min
+step=  71800  loss=0.5659  lr=2.68e-04  H_max=15  sps=5.1  elapsed=236.1min
+step=  72000  loss=0.5640  lr=2.66e-04  H_max=15  sps=5.1  elapsed=236.8min
+  EVAL step=72000  H=1: 1.000  H=7: 0.373  H=15: 0.334  MLRD@0.8=1
+step=  72200  loss=0.5659  lr=2.64e-04  H_max=15  sps=4.4  elapsed=237.6min
+step=  72400  loss=0.5644  lr=2.62e-04  H_max=15  sps=5.1  elapsed=238.2min
+step=  72600  loss=0.5638  lr=2.60e-04  H_max=15  sps=5.1  elapsed=238.9min
+step=  72800  loss=0.5628  lr=2.57e-04  H_max=15  sps=5.1  elapsed=239.5min
+step=  73000  loss=0.5666  lr=2.55e-04  H_max=15  sps=5.1  elapsed=240.2min
+step=  73200  loss=0.5643  lr=2.53e-04  H_max=15  sps=5.1  elapsed=240.8min
+step=  73400  loss=0.5645  lr=2.51e-04  H_max=15  sps=5.1  elapsed=241.5min
+step=  73600  loss=0.5641  lr=2.49e-04  H_max=15  sps=5.1  elapsed=242.1min
+step=  73800  loss=0.5654  lr=2.47e-04  H_max=15  sps=5.1  elapsed=242.8min
+step=  74000  loss=0.5652  lr=2.45e-04  H_max=15  sps=5.1  elapsed=243.4min
+step=  74200  loss=0.5649  lr=2.43e-04  H_max=15  sps=5.1  elapsed=244.1min
+step=  74400  loss=0.5641  lr=2.40e-04  H_max=15  sps=5.1  elapsed=244.8min
+step=  74600  loss=0.5658  lr=2.38e-04  H_max=15  sps=5.1  elapsed=245.4min
+step=  74800  loss=0.5639  lr=2.36e-04  H_max=15  sps=5.1  elapsed=246.1min
+step=  75000  loss=0.5659  lr=2.34e-04  H_max=15  sps=5.1  elapsed=246.7min
+step=  75200  loss=0.5642  lr=2.32e-04  H_max=15  sps=5.1  elapsed=247.4min
+step=  75400  loss=0.5632  lr=2.30e-04  H_max=15  sps=5.1  elapsed=248.0min
+step=  75600  loss=0.5648  lr=2.28e-04  H_max=15  sps=5.1  elapsed=248.7min
+step=  75800  loss=0.5637  lr=2.26e-04  H_max=15  sps=5.1  elapsed=249.3min
+step=  76000  loss=0.5646  lr=2.24e-04  H_max=15  sps=5.1  elapsed=250.0min
+  EVAL step=76000  H=1: 1.000  H=7: 0.368  H=15: 0.338  MLRD@0.8=1
+step=  76200  loss=0.5652  lr=2.22e-04  H_max=15  sps=4.4  elapsed=250.7min
+step=  76400  loss=0.5656  lr=2.20e-04  H_max=15  sps=5.1  elapsed=251.4min
+step=  76600  loss=0.5652  lr=2.18e-04  H_max=15  sps=5.1  elapsed=252.1min
+step=  76800  loss=0.5647  lr=2.17e-04  H_max=15  sps=5.1  elapsed=252.7min
+step=  77000  loss=0.5643  lr=2.15e-04  H_max=15  sps=5.1  elapsed=253.4min
+step=  77200  loss=0.5642  lr=2.13e-04  H_max=15  sps=5.1  elapsed=254.0min
+step=  77400  loss=0.5636  lr=2.11e-04  H_max=15  sps=5.1  elapsed=254.7min
+step=  77600  loss=0.5620  lr=2.09e-04  H_max=15  sps=5.1  elapsed=255.3min
+step=  77800  loss=0.5653  lr=2.07e-04  H_max=15  sps=5.1  elapsed=256.0min
+step=  78000  loss=0.5655  lr=2.05e-04  H_max=15  sps=5.1  elapsed=256.6min
+step=  78200  loss=0.5652  lr=2.03e-04  H_max=15  sps=5.1  elapsed=257.3min
+step=  78400  loss=0.5645  lr=2.02e-04  H_max=15  sps=5.1  elapsed=257.9min
+step=  78600  loss=0.5643  lr=2.00e-04  H_max=15  sps=5.1  elapsed=258.6min
+step=  78800  loss=0.5646  lr=1.98e-04  H_max=15  sps=5.1  elapsed=259.3min
+step=  79000  loss=0.5643  lr=1.96e-04  H_max=15  sps=5.1  elapsed=259.9min
+step=  79200  loss=0.5621  lr=1.95e-04  H_max=15  sps=5.1  elapsed=260.6min
+step=  79400  loss=0.5631  lr=1.93e-04  H_max=15  sps=5.1  elapsed=261.2min
+step=  79600  loss=0.5644  lr=1.91e-04  H_max=15  sps=5.1  elapsed=261.9min
+step=  79800  loss=0.5639  lr=1.89e-04  H_max=15  sps=5.1  elapsed=262.5min
+step=  80000  loss=0.5643  lr=1.88e-04  H_max=15  sps=5.1  elapsed=263.2min
+  EVAL step=80000  H=1: 1.000  H=7: 0.332  H=15: 0.358  MLRD@0.8=1
+step=  80200  loss=0.5633  lr=1.86e-04  H_max=15  sps=4.4  elapsed=263.9min
+step=  80400  loss=0.5649  lr=1.84e-04  H_max=15  sps=5.1  elapsed=264.6min
+step=  80600  loss=0.5639  lr=1.83e-04  H_max=15  sps=5.1  elapsed=265.3min
+step=  80800  loss=0.5646  lr=1.81e-04  H_max=15  sps=5.1  elapsed=265.9min
+step=  81000  loss=0.5645  lr=1.79e-04  H_max=15  sps=5.1  elapsed=266.6min
+step=  81200  loss=0.5633  lr=1.78e-04  H_max=15  sps=5.1  elapsed=267.2min
+step=  81400  loss=0.5636  lr=1.76e-04  H_max=15  sps=5.1  elapsed=267.9min
+step=  81600  loss=0.5630  lr=1.75e-04  H_max=15  sps=5.1  elapsed=268.5min
+step=  81800  loss=0.5656  lr=1.73e-04  H_max=15  sps=5.1  elapsed=269.2min
+step=  82000  loss=0.5654  lr=1.71e-04  H_max=15  sps=5.1  elapsed=269.8min
+step=  82200  loss=0.5630  lr=1.70e-04  H_max=15  sps=5.1  elapsed=270.5min
+step=  82400  loss=0.5660  lr=1.68e-04  H_max=15  sps=5.1  elapsed=271.1min
+step=  82600  loss=0.5665  lr=1.67e-04  H_max=15  sps=5.1  elapsed=271.8min
+step=  82800  loss=0.5653  lr=1.65e-04  H_max=15  sps=5.1  elapsed=272.5min
+step=  83000  loss=0.5661  lr=1.64e-04  H_max=15  sps=5.1  elapsed=273.1min
+step=  83200  loss=0.5632  lr=1.62e-04  H_max=15  sps=5.1  elapsed=273.8min
+step=  83400  loss=0.5653  lr=1.61e-04  H_max=15  sps=5.1  elapsed=274.4min
+step=  83600  loss=0.5635  lr=1.60e-04  H_max=15  sps=5.1  elapsed=275.1min
+step=  83800  loss=0.5619  lr=1.58e-04  H_max=15  sps=5.1  elapsed=275.7min
+step=  84000  loss=0.5641  lr=1.57e-04  H_max=15  sps=5.1  elapsed=276.4min
+  EVAL step=84000  H=1: 1.000  H=7: 0.364  H=15: 0.371  MLRD@0.8=1
+step=  84200  loss=0.5655  lr=1.55e-04  H_max=15  sps=4.4  elapsed=277.1min
+step=  84400  loss=0.5623  lr=1.54e-04  H_max=15  sps=5.1  elapsed=277.8min
+step=  84600  loss=0.5640  lr=1.53e-04  H_max=15  sps=5.1  elapsed=278.4min
+step=  84800  loss=0.5647  lr=1.51e-04  H_max=15  sps=5.1  elapsed=279.1min
+step=  85000  loss=0.5635  lr=1.50e-04  H_max=15  sps=5.1  elapsed=279.8min
+step=  85200  loss=0.5636  lr=1.49e-04  H_max=15  sps=5.1  elapsed=280.4min
+step=  85400  loss=0.5651  lr=1.47e-04  H_max=15  sps=5.1  elapsed=281.1min
+step=  85600  loss=0.5645  lr=1.46e-04  H_max=15  sps=5.1  elapsed=281.7min
+step=  85800  loss=0.5640  lr=1.45e-04  H_max=15  sps=5.1  elapsed=282.4min
+step=  86000  loss=0.5647  lr=1.44e-04  H_max=15  sps=5.1  elapsed=283.0min
+step=  86200  loss=0.5653  lr=1.42e-04  H_max=15  sps=5.1  elapsed=283.7min
+step=  86400  loss=0.5634  lr=1.41e-04  H_max=15  sps=5.1  elapsed=284.3min
+step=  86600  loss=0.5646  lr=1.40e-04  H_max=15  sps=5.1  elapsed=285.0min
+step=  86800  loss=0.5640  lr=1.39e-04  H_max=15  sps=5.1  elapsed=285.6min
+step=  87000  loss=0.5642  lr=1.38e-04  H_max=15  sps=5.1  elapsed=286.3min
+step=  87200  loss=0.5632  lr=1.37e-04  H_max=15  sps=5.1  elapsed=286.9min
+step=  87400  loss=0.5633  lr=1.35e-04  H_max=15  sps=5.1  elapsed=287.6min
+step=  87600  loss=0.5633  lr=1.34e-04  H_max=15  sps=5.1  elapsed=288.3min
+step=  87800  loss=0.5631  lr=1.33e-04  H_max=15  sps=5.1  elapsed=288.9min
+step=  88000  loss=0.5638  lr=1.32e-04  H_max=15  sps=5.1  elapsed=289.6min
+  EVAL step=88000  H=1: 1.000  H=7: 0.310  H=15: 0.409  MLRD@0.8=1
+step=  88200  loss=0.5639  lr=1.31e-04  H_max=15  sps=4.4  elapsed=290.3min
+step=  88400  loss=0.5645  lr=1.30e-04  H_max=15  sps=5.1  elapsed=291.0min
+step=  88600  loss=0.5647  lr=1.29e-04  H_max=15  sps=5.1  elapsed=291.6min
+step=  88800  loss=0.5630  lr=1.28e-04  H_max=15  sps=5.1  elapsed=292.3min
+step=  89000  loss=0.5630  lr=1.27e-04  H_max=15  sps=5.1  elapsed=292.9min
+step=  89200  loss=0.5633  lr=1.26e-04  H_max=15  sps=5.1  elapsed=293.6min
+step=  89400  loss=0.5628  lr=1.25e-04  H_max=15  sps=5.1  elapsed=294.2min
+step=  89600  loss=0.5626  lr=1.24e-04  H_max=15  sps=5.1  elapsed=294.9min
+step=  89800  loss=0.5650  lr=1.23e-04  H_max=15  sps=5.1  elapsed=295.6min
+step=  90000  loss=0.5649  lr=1.22e-04  H_max=15  sps=5.1  elapsed=296.2min
+step=  90200  loss=0.5629  lr=1.22e-04  H_max=15  sps=5.1  elapsed=296.9min
+step=  90400  loss=0.5632  lr=1.21e-04  H_max=15  sps=5.1  elapsed=297.5min
+step=  90600  loss=0.5632  lr=1.20e-04  H_max=15  sps=5.1  elapsed=298.2min
+step=  90800  loss=0.5629  lr=1.19e-04  H_max=15  sps=5.1  elapsed=298.8min
+step=  91000  loss=0.5644  lr=1.18e-04  H_max=15  sps=5.1  elapsed=299.5min
+step=  91200  loss=0.5627  lr=1.17e-04  H_max=15  sps=5.1  elapsed=300.1min
+step=  91400  loss=0.5655  lr=1.17e-04  H_max=15  sps=5.1  elapsed=300.8min
+step=  91600  loss=0.5617  lr=1.16e-04  H_max=15  sps=5.1  elapsed=301.4min
+step=  91800  loss=0.5635  lr=1.15e-04  H_max=15  sps=5.1  elapsed=302.1min
+step=  92000  loss=0.5625  lr=1.14e-04  H_max=15  sps=5.1  elapsed=302.7min
+  EVAL step=92000  H=1: 1.000  H=7: 0.351  H=15: 0.445  MLRD@0.8=1
+step=  92200  loss=0.5650  lr=1.14e-04  H_max=15  sps=4.4  elapsed=303.5min
+step=  92400  loss=0.5642  lr=1.13e-04  H_max=15  sps=5.1  elapsed=304.2min
+step=  92600  loss=0.5637  lr=1.12e-04  H_max=15  sps=5.1  elapsed=304.8min
+step=  92800  loss=0.5628  lr=1.12e-04  H_max=15  sps=5.1  elapsed=305.5min
+step=  93000  loss=0.5626  lr=1.11e-04  H_max=15  sps=5.1  elapsed=306.1min
+step=  93200  loss=0.5639  lr=1.10e-04  H_max=15  sps=5.1  elapsed=306.8min
+step=  93400  loss=0.5624  lr=1.10e-04  H_max=15  sps=5.1  elapsed=307.4min
+step=  93600  loss=0.5645  lr=1.09e-04  H_max=15  sps=5.1  elapsed=308.1min
+step=  93800  loss=0.5627  lr=1.09e-04  H_max=15  sps=5.1  elapsed=308.7min
+step=  94000  loss=0.5642  lr=1.08e-04  H_max=15  sps=5.1  elapsed=309.4min
+step=  94200  loss=0.5630  lr=1.08e-04  H_max=15  sps=5.1  elapsed=310.1min
+step=  94400  loss=0.5636  lr=1.07e-04  H_max=15  sps=5.1  elapsed=310.7min
+step=  94600  loss=0.5620  lr=1.07e-04  H_max=15  sps=5.1  elapsed=311.4min
+step=  94800  loss=0.5632  lr=1.06e-04  H_max=15  sps=5.1  elapsed=312.0min
+step=  95000  loss=0.5653  lr=1.06e-04  H_max=15  sps=5.1  elapsed=312.7min
+step=  95200  loss=0.5633  lr=1.05e-04  H_max=15  sps=5.1  elapsed=313.3min
+step=  95400  loss=0.5627  lr=1.05e-04  H_max=15  sps=5.1  elapsed=314.0min
+step=  95600  loss=0.5639  lr=1.04e-04  H_max=15  sps=5.1  elapsed=314.6min
+step=  95800  loss=0.5630  lr=1.04e-04  H_max=15  sps=5.1  elapsed=315.3min
+step=  96000  loss=0.5649  lr=1.04e-04  H_max=15  sps=5.1  elapsed=315.9min
+  EVAL step=96000  H=1: 1.000  H=7: 0.373  H=15: 0.418  MLRD@0.8=1
+step=  96200  loss=0.5619  lr=1.03e-04  H_max=15  sps=4.4  elapsed=316.7min
+step=  96400  loss=0.5624  lr=1.03e-04  H_max=15  sps=5.1  elapsed=317.4min
+step=  96600  loss=0.5628  lr=1.03e-04  H_max=15  sps=5.1  elapsed=318.0min
+step=  96800  loss=0.5631  lr=1.02e-04  H_max=15  sps=5.1  elapsed=318.7min
+step=  97000  loss=0.5630  lr=1.02e-04  H_max=15  sps=5.1  elapsed=319.3min
+step=  97200  loss=0.5632  lr=1.02e-04  H_max=15  sps=5.1  elapsed=320.0min
+step=  97400  loss=0.5651  lr=1.02e-04  H_max=15  sps=5.1  elapsed=320.6min
+step=  97600  loss=0.5629  lr=1.01e-04  H_max=15  sps=5.1  elapsed=321.3min
+step=  97800  loss=0.5640  lr=1.01e-04  H_max=15  sps=5.1  elapsed=321.9min
+step=  98000  loss=0.5636  lr=1.01e-04  H_max=15  sps=5.1  elapsed=322.6min
+step=  98200  loss=0.5624  lr=1.01e-04  H_max=15  sps=5.1  elapsed=323.2min
+step=  98400  loss=0.5649  lr=1.01e-04  H_max=15  sps=5.1  elapsed=323.9min
+step=  98600  loss=0.5624  lr=1.00e-04  H_max=15  sps=5.1  elapsed=324.6min
+step=  98800  loss=0.5634  lr=1.00e-04  H_max=15  sps=5.1  elapsed=325.2min
+step=  99000  loss=0.5643  lr=1.00e-04  H_max=15  sps=5.1  elapsed=325.9min
+step=  99200  loss=0.5638  lr=1.00e-04  H_max=15  sps=5.1  elapsed=326.5min
+step=  99400  loss=0.5611  lr=1.00e-04  H_max=15  sps=5.1  elapsed=327.2min
+step=  99600  loss=0.5628  lr=1.00e-04  H_max=15  sps=5.1  elapsed=327.8min
+step=  99800  loss=0.5622  lr=1.00e-04  H_max=15  sps=5.1  elapsed=328.5min
+step= 100000  loss=0.5622  lr=1.00e-04  H_max=15  sps=5.1  elapsed=329.1min
+  EVAL step=100000  H=1: 1.000  H=7: 0.321  H=15: 0.450  MLRD@0.8=1
+Done. Total time: 329.2min
+ H_max=15  sps=5.1  elapsed=329.1min
+  EVAL step=100000  H=1: 1.000  H=7: 0.321  H=15: 0.450  MLRD@0.8=1
+Done. Total time: 329.2min

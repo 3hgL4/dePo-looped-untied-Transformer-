@@ -1,0 +1,18 @@
+{
+  "threshold": 0.5,
+  "onset_per_hop": [
+    2,
+    3,
+    4,
+    4
+  ],
+  "persistence_per_hop": [
+    0.5855713486671448,
+    0.590399980545044,
+    0.8833599090576172,
+    0.9516800045967102
+  ],
+  "global_persistence": 0.752752810716629,
+  "n_hops_crossed": 4,
+  "n_hops_total": 4
+}

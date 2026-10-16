@@ -1,0 +1,62 @@
+{
+ "run": "deep-32_s46",
+ "config_name": "deep-32",
+ "seed": 46,
+ "learning_rate": 0.001,
+ "aux_deep_supervision": false,
+ "H_eval": 4,
+ "N": 16,
+ "M": 5,
+ "n_samples": 5000,
+ "eval_seed": 12345,
+ "max_len": 200,
+ "batch_size": 32,
+ "device": "cpu",
+ "eval_text_sha256": "fc89833490947492a169bada20cbd083c0824016aac2dfa8e96ca6bc83bd2e1c",
+ "checkpoint_source": "<storage>/local_archive_20260916/h1_clean_sweep_runs/deep-32_s46/checkpoint.pt",
+ "checkpoint_sha256": "c4414d3ee74ef0396b5547c320e87fcdcf90de0a077d520d7eeb565f16db8e71",
+ "protocol": "teacher_forced_answer_tokens_plus_delimiter_v1",
+ "chance_full_answer": 0.0625,
+ "chance_first_token": 0.4375,
+ "complete_answer": {
+  "protocol": "teacher_forced_answer_tokens_plus_delimiter_v1",
+  "previous_query_answers": "teacher_forced",
+  "termination_target": "|",
+  "scoring_suffix": " |",
+  "scoring_suffix_note": "Appended after the final gold node; never scored as padding or EOS.",
+  "eval_text_sha256": "fc89833490947492a169bada20cbd083c0824016aac2dfa8e96ca6bc83bd2e1c",
+  "scoring_text_sha256": "871544e24e887905f42deab2e90b172720709d71582dc1f71ba74525ff9d1526",
+  "n_evaluated": 25000,
+  "complete_node_accuracy": 0.285,
+  "answer_span_accuracy": 0.32468,
+  "boundary_accuracy": 0.9596,
+  "strata": {
+   "all": {
+    "n_evaluated": 25000,
+    "n_correct": 7125,
+    "accuracy": 0.285
+   },
+   "first_query": {
+    "n_evaluated": 5000,
+    "n_correct": 825,
+    "accuracy": 0.165
+   },
+   "fresh_start": {
+    "n_evaluated": 22089,
+    "n_correct": 4281,
+    "accuracy": 0.193806872198832
+   },
+   "repeated_start": {
+    "n_evaluated": 2911,
+    "n_correct": 2844,
+    "accuracy": 0.9769838543455857
+   }
+  }
+ },
+ "first_query_accuracy": 0.165,
+ "first_token_on_disk": {
+  "source": "experiments/h2_probing/results/clean_sweep_5seed_h4/deep-32_s46/probe_results.json",
+  "accuracy": 0.5084,
+  "k_sweep_head_accuracy": null
+ }
+}

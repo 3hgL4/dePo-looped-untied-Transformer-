@@ -1,0 +1,17 @@
+{
+  "dim": 256,
+  "n_heads": 8,
+  "causal": true,
+  "feed_forward_multiple_of": 64,
+  "norm_eps": 1e-05,
+  "vocab_size": 18,
+  "max_sequence_len": 384,
+  "pad_token_idx": 1,
+  "model_type": "looped",
+  "n_recurrent_layers": 4,
+  "K_max": 8,
+  "n_prelude_layers": 0,
+  "n_coda_layers": 0,
+  "use_timestep_embedding": true,
+  "bptt_last_j": null
+}

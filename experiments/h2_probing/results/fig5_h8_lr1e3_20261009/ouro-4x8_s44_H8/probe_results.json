@@ -1,0 +1,174 @@
+{
+  "config_name": "ouro-4x8",
+  "checkpoint": "<storage>/ckpt/ouro-4x8_s44/checkpoint.pt",
+  "random_init": false,
+  "is_looped": true,
+  "n_levels": 33,
+  "n_levels_label": "layer",
+  "n_classes": 16,
+  "n_probe_examples": 25000,
+  "probe_split": {
+    "unit": "prompt",
+    "eval_seed": 12345,
+    "probe_seed": 0,
+    "torch_probe_seed": 0,
+    "train_frac": 0.8,
+    "n_train_queries": 20000,
+    "n_test_queries": 5000,
+    "n_train_prompts": 4000,
+    "n_test_prompts": 1000,
+    "n_shared_prompts": 0,
+    "control_labels": "training_partition_only",
+    "eval_text_sha256": "5053f228882b9adced3f5eb77ba4c71216a71a0f75e20bfb8100533c62924011",
+    "split_arrays_sha256": "161d85fb2e14212947e40b3662b28051a649c313d42afac4253a61ed2c0b41c1",
+    "probe_source_sha256": "79aa6ac5f42b1123c7f55f66bc56ef3422487245675dc2ccf627de5902088bd8"
+  },
+  "H_eval": 8,
+  "n_samples": 5000,
+  "M": 5,
+  "model_config": {
+    "dim": 256,
+    "n_heads": 8,
+    "causal": true,
+    "feed_forward_multiple_of": 64,
+    "norm_eps": 1e-05,
+    "vocab_size": 18,
+    "max_sequence_len": 200,
+    "pad_token_idx": 1,
+    "model_type": "looped",
+    "n_recurrent_layers": 4,
+    "K_max": 8,
+    "n_prelude_layers": 0,
+    "n_coda_layers": 0,
+    "use_timestep_embedding": true,
+    "bptt_last_j": null
+  },
+  "args": {
+    "checkpoint": "<storage>/ckpt/ouro-4x8_s44/checkpoint.pt",
+    "config_name": "ouro-4x8",
+    "out_dir": "<storage>/fig5probe/cpu/ouro-4x8_s44_H8",
+    "task": "pointer",
+    "N": 16,
+    "M": 5,
+    "H_eval": 8,
+    "n_samples": 5000,
+    "max_len": 200,
+    "eval_seed": 12345,
+    "probe_seed": 0,
+    "train_frac": 0.8,
+    "split_by_prompt": true,
+    "complete_answer_eval": true,
+    "batch_size": 32,
+    "device": "cpu",
+    "random_init": false,
+    "use_nope": false,
+    "zero_init": true,
+    "probe_types": "linear",
+    "per_layer": true,
+    "k_sweep": false,
+    "transfer_matrix": false,
+    "split_by_correctness": false,
+    "sanity_min_acc": 0.8,
+    "no_timestep_embedding": false
+  },
+  "accuracy_summary": {
+    "linear_real": {
+      "max": 1.0,
+      "argmax": [
+        7,
+        0
+      ],
+      "mean": 0.412727952003479
+    },
+    "linear_shuffled": {
+      "max": 0.15299999713897705,
+      "argmax": [
+        8,
+        0
+      ],
+      "mean": 0.06274208426475525
+    }
+  },
+  "task": "pointer",
+  "n_registers": null,
+  "model_prediction_sanity": {
+    "next_token_accuracy_at_probe_pos": 0.9896,
+    "n_evaluated": 2500
+  },
+  "model_complete_answer": {
+    "protocol": "teacher_forced_answer_tokens_plus_delimiter_v1",
+    "previous_query_answers": "teacher_forced",
+    "termination_target": "|",
+    "scoring_suffix": " |",
+    "scoring_suffix_note": "Appended after the final gold node; never scored as padding or EOS.",
+    "eval_text_sha256": "5053f228882b9adced3f5eb77ba4c71216a71a0f75e20bfb8100533c62924011",
+    "scoring_text_sha256": "e700666777f895c07c3478fae6e9a874fd386489ce6dd5d676e1e6c022502be0",
+    "n_evaluated": 25000,
+    "complete_node_accuracy": 0.98708,
+    "answer_span_accuracy": 0.98724,
+    "boundary_accuracy": 0.99984,
+    "strata": {
+      "all": {
+        "n_evaluated": 25000,
+        "n_correct": 24677,
+        "accuracy": 0.98708
+      },
+      "first_query": {
+        "n_evaluated": 5000,
+        "n_correct": 4926,
+        "accuracy": 0.9852
+      },
+      "fresh_start": {
+        "n_evaluated": 22089,
+        "n_correct": 21792,
+        "accuracy": 0.9865543935895694
+      },
+      "repeated_start": {
+        "n_evaluated": 2911,
+        "n_correct": 2885,
+        "accuracy": 0.9910683613878393
+      }
+    }
+  },
+  "probe_strata": {
+    "first_query": {
+      "n_train_queries": 4000,
+      "n_test_queries": 1000
+    },
+    "fresh_start": {
+      "n_train_queries": 17673,
+      "n_test_queries": 4416
+    },
+    "repeated_start": {
+      "n_train_queries": 2327,
+      "n_test_queries": 584
+    }
+  },
+  "accumulation_score": {
+    "threshold": 0.5,
+    "onset_per_hop": [
+      9,
+      13,
+      17,
+      20,
+      24,
+      28,
+      30,
+      30
+    ],
+    "persistence_per_hop": [
+      0.9096999764442444,
+      0.6934700608253479,
+      0.7144874930381775,
+      0.7935076355934143,
+      0.9270222187042236,
+      0.9584000706672668,
+      0.7292000651359558,
+      0.6688000559806824
+    ],
+    "global_persistence": 0.7993234470486641,
+    "n_hops_crossed": 8,
+    "n_hops_total": 8
+  },
+  "k_sweep_head_accuracy": null
+}
