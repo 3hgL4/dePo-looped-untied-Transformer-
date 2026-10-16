@@ -7,6 +7,7 @@
 #   aux_rerun_h4          the untied 32-layer model with intermediate supervision, the two seeds
 #                         that solve the task (44, 45)
 #   rebuttal/probe_o2x16_s*  looped 2x16, seeds 42-46, 3,000 prompts (the weak-middle-hops seed)
+#   clean_sweep_5seed     looped 4x8 at H=8, seeds 42-45 (the retention paragraph of App. "Probes")
 source "$(dirname "$0")/common.sh"
 CK=$RUNS/h1_clean_sweep
 OUT=$PROBES/clean_sweep_5seed_h4
@@ -33,4 +34,9 @@ for seed in 42 43 44 45 46; do
   run $PY src/probe_h2.py --checkpoint $CK/ouro-2x16_s$seed/checkpoint.pt --config_name ouro-2x16 \
       --out_dir $PROBES/rebuttal/probe_o2x16_s$seed $PROBE_ROW --H_eval 4 --n_samples 3000 \
       --batch_size 64 --probe_types linear --sanity_min_acc 0.0
+done
+for seed in 42 43 44 45; do
+  run $PY src/probe_h2.py --checkpoint $CK/ouro-4x8_s$seed/checkpoint.pt --config_name ouro-4x8 \
+      --out_dir $PROBES/clean_sweep_5seed/ouro-4x8_s$seed $PROBE_ROW --H_eval 8 --n_samples 5000 \
+      --batch_size 32 --probe_types linear,mlp --sanity_min_acc 0.6
 done
