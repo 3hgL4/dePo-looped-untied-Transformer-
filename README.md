@@ -1,3 +1,9 @@
+> **Note — audit fork (2026-10).** This repo is a copy of the MIT-licensed *Inside the Loop*
+> release (NeurIPS 2026) plus a measurement-audit layer added on top. Start at
+> **[AUDIT.md](AUDIT.md)**: four measurement defects found in the harness, five control
+> experiments, three read-out traps, and the commands that reproduce every number.
+> Upstream code and its shipped runs are unmodified; the original README follows.
+
 # Inside the Loop
 
 Code and results for **Inside the Loop: A Mechanistic Study of Weight-Tied Transformers on
