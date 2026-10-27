@@ -47,7 +47,9 @@ Scoring. Every patched (and baseline) run is scored two ways:
 Outputs (in --out_dir):
     intervention.npz     per-(trial,query,j) predicted node (first token and full
                          answer) + the three target nodes (pure_A, pure_B,
-                         composed_j) and the query index.
+                         composed_j) and the query index. With --control
+                         mismatched_query it also carries ctrl_q, composed_ctrl
+                         and ctrl_{full,pred}_by_j (the matched-control rows).
     intervention_summary.json  aggregate match-rate curves vs j: full-answer
                          block ("full_answer", all queries and first query) and
                          the first-token curves with their unambiguous subset.
@@ -107,7 +109,8 @@ def _edges_str(order: list[int], rng: random.Random) -> str:
 
 
 def generate_paired_trials(
-    N: int, H: int, M: int, n_trials: int, seed: int, mode: str = "compose"
+    N: int, H: int, M: int, n_trials: int, seed: int, mode: str = "compose",
+    with_control: bool = False,
 ) -> list[dict]:
     """Each trial builds a donor prompt A and a receiver prompt B, plus per-query
     target nodes. One patched forward resolves all M queries at once.
@@ -125,6 +128,20 @@ def generate_paired_trials(
         pointer, injecting the donor pointer at iteration j redirects the answer
         to the donor chain pi^H(s_d) for every j where enough iterations remain;
         composed[j] = pi^H(s_d) = pure_A for all j. pure_B = pi^H(s_r).
+
+    with_control=True additionally records, per query, a MATCHED control target:
+    the same donor residual (same prompt, same readout position class, same
+    iteration j, same layer) taken from a DIFFERENT query q' of the same donor
+    prompt. q' is chosen so that pi_A(s_q') != pi_A(s_q), which — pi_A being a
+    permutation — guarantees pi_A^{j+1}(s_q') != pi_A^{j+1}(s_q) for every
+    j >= 0: the injected state provably encodes a different node. The control's
+    own composed path is
+        composed_ctrl[j] = pi_B^{H-(j+1)}( pi_A^{j+1}(s_q') )
+    (clamped exactly like `composed`). Everything about the injected activation
+    is held fixed except which node it is about, so a real effect must show up
+    as real-activation matching its own target better than the control does.
+    The control pass draws no RNG, so with_control=True produces byte-identical
+    prompts and targets for `composed`.
     """
     rng = random.Random(seed)
     trials = []
@@ -165,6 +182,33 @@ def generate_paired_trials(
                 "pure_B": ans_B,
                 "composed": composed,  # composed[H]=pure_A; redirect: all=pure_A
             })
+
+        if with_control:
+            # Matched control: pair each query with a partner query whose chain
+            # is provably at a different node at every iteration (pi_A injective
+            # and the one-hop successors differ). No RNG is drawn here.
+            succ_A = {s: _apply_power(fwd_A, s, 1) for s in order_A}
+            for q in range(M):
+                s_q = targets[q]["start_donor"]
+                partner = None
+                for k in range(1, M):
+                    cand = (q + k) % M
+                    if succ_A[targets[cand]["start_donor"]] != succ_A[s_q]:
+                        partner = cand
+                        break
+                if partner is None:
+                    targets[q]["ctrl_q"] = None
+                    targets[q]["composed_ctrl"] = None
+                    continue
+                s_x = targets[partner]["start_donor"]
+                ctrl = []
+                for j in range(H + 1):
+                    donor_hop = min(j + 1, H)
+                    mid = _apply_power(fwd_A, s_x, donor_hop)
+                    remaining = max(H - donor_hop, 0)
+                    ctrl.append(_apply_power(fwd_B, mid, remaining))
+                targets[q]["ctrl_q"] = partner
+                targets[q]["composed_ctrl"] = ctrl
 
         text_A = _edges_str(order_A, rng) + " | " + " | ".join(q_A)
         text_B = _edges_str(order_B, rng) + " | " + " | ".join(q_B)
@@ -261,6 +305,7 @@ def run_intervention(
     node_to_tok: np.ndarray,
     ambiguous_nodes: set[int],
     patch_answer_digit: bool = False,
+    with_control: bool = False,
 ) -> dict:
     """For each trial: capture donor states from prompt_A, then for the baseline
     and every patch iteration j in 0..K-1 run the receiver prompt_B with the
@@ -320,8 +365,16 @@ def run_intervention(
         assert valid_B[start:].all()
         rel = [p - start for p in B_pos]
         W = rel[M - 1] + 1 + n_gen
-        js = list(range(-1, K))  # -1 = baseline
-        R = len(js) * M
+        # Row specs: baseline rows first (one per query), then for each patch
+        # iteration j one row per query, plus — when with_control — a row whose
+        # injected states come from the query's matched partner chain instead.
+        specs = [(-1, q, False) for q in range(M)]
+        for j in range(K):
+            for q in range(M):
+                specs.append((j, q, False))
+                if with_control and trial["targets"][q].get("ctrl_q") is not None:
+                    specs.append((j, q, True))
+        R = len(specs)
         tokens = torch.full((R, W), tokenizer.pad_token_id, dtype=torch.long, device=device)
         mask = torch.zeros((R, W), dtype=torch.bool, device=device)
         it = torch.full((R,), -1, dtype=torch.long, device=device)
@@ -329,20 +382,23 @@ def run_intervention(
         inj_mask = torch.zeros((R, W), dtype=torch.bool, device=device)
         cur = torch.zeros(R, dtype=torch.long, device=device)
         prompt = tok_B["tokens"][0, start:].to(device)
-        for a, j in enumerate(js):
-            for q in range(M):
-                r = a * M + q
-                tokens[r, :rel[q] + 1] = prompt[:rel[q] + 1]
-                mask[r, :rel[q] + 1] = True
-                cur[r] = rel[q] + 1
-                if j >= 0:
-                    it[r] = j
-                    for qq in range(q + 1):
-                        inj_vals[r, rel[qq]] = donor_states[j][0, A_pos[qq]]
-                        inj_mask[r, rel[qq]] = True
-                        if patch_answer_digit:
-                            inj_vals[r, rel[qq] + 1] = donor_states[j][0, A_pos[qq] + 1]
-                            inj_mask[r, rel[qq] + 1] = True
+        for r, (j, q, is_ctrl) in enumerate(specs):
+            tokens[r, :rel[q] + 1] = prompt[:rel[q] + 1]
+            mask[r, :rel[q] + 1] = True
+            cur[r] = rel[q] + 1
+            if j >= 0:
+                it[r] = j
+                for qq in range(q + 1):
+                    src = qq
+                    if is_ctrl:
+                        src = trial["targets"][qq].get("ctrl_q")
+                        if src is None:  # no partner for this prefix position
+                            src = qq
+                    inj_vals[r, rel[qq]] = donor_states[j][0, A_pos[src]]
+                    inj_mask[r, rel[qq]] = True
+                    if patch_answer_digit:
+                        inj_vals[r, rel[qq] + 1] = donor_states[j][0, A_pos[src] + 1]
+                        inj_mask[r, rel[qq] + 1] = True
 
         first = np.full(R, -2, dtype=np.int64)
         space_ok = np.zeros(R, dtype=bool)
@@ -367,12 +423,20 @@ def run_intervention(
         pred_by_j = np.full((n_iter_grid, M), -2, dtype=np.int64)
         full_by_j = np.full((n_iter_grid, M), -2, dtype=np.int64)
         written_by_j = np.full((n_iter_grid + 1, M, n_gen), -2, dtype=np.int64)  # row K+1 = baseline
-        written = np.array(written, dtype=np.int64).reshape(len(js), M, n_gen)
-        written_by_j[K + 1] = written[0]
-        for a, j in enumerate(js[1:], start=1):
-            pred_by_j[j] = first[a * M:(a + 1) * M]
-            full_by_j[j] = full[a * M:(a + 1) * M]
-            written_by_j[j] = written[a]
+        ctrl_pred_by_j = np.full((n_iter_grid, M), -2, dtype=np.int64)
+        ctrl_full_by_j = np.full((n_iter_grid, M), -2, dtype=np.int64)
+        written_arr = np.array(written, dtype=np.int64).reshape(R, n_gen)
+        written_by_j[K + 1] = written_arr[:M]  # baseline rows are specs[0:M]
+        for r, (j, q, is_ctrl) in enumerate(specs):
+            if j < 0:
+                continue
+            if is_ctrl:
+                ctrl_pred_by_j[j, q] = first[r]
+                ctrl_full_by_j[j, q] = full[r]
+            else:
+                pred_by_j[j, q] = first[r]
+                full_by_j[j, q] = full[r]
+                written_by_j[j, q] = written_arr[r]
 
         for q in range(M):
             tgt = trial["targets"][q]
@@ -386,6 +450,10 @@ def run_intervention(
                 "pred_by_j": pred_by_j[:, q].tolist(),  # length K+1 (last unused)
                 "full_by_j": full_by_j[:, q].tolist(),
                 "written_by_j": written_by_j[:, q].tolist(),  # (K+2, n_gen) tokens; row K+1 = baseline
+                "ctrl_q": tgt.get("ctrl_q"),
+                "composed_ctrl": tgt.get("composed_ctrl"),   # length H+1, or None
+                "ctrl_pred_by_j": ctrl_pred_by_j[:, q].tolist(),
+                "ctrl_full_by_j": ctrl_full_by_j[:, q].tolist(),
             })
 
     return {"records": records, "K": K, "H": H}
@@ -418,6 +486,76 @@ def summarize_full_answer(recs: list[dict], K: int, H: int) -> dict:
             "match_composed": rate(comp, [n] * (Jmax + 1)), "match_pure_A": rate(pa, [n] * (Jmax + 1)),
             "match_pure_B": rate(pb, [n] * (Jmax + 1)), "match_composed_distinct": rate(dist, dist_n),
             "distinct_counts": dist_n.tolist()}
+
+
+def summarize_control(recs: list[dict], node_to_tok: np.ndarray,
+                      ambiguous_nodes: set[int], K: int, H: int) -> dict:
+    """Matched-control 2x2 over the rows whose injected donor state came from the
+    query's partner chain (a different chain of the same donor prompt, so a
+    provably different node, same iteration / position class / layer):
+
+        ctrl_vs_ctrl  control activation -> control target  (mechanism predicts high)
+        ctrl_vs_real  control activation -> real target     (should stay at 1/N)
+        real_vs_ctrl  real activation    -> control target  (should stay at 1/N)
+        real_vs_real  real activation    -> real target     (= match_composed)
+
+    All four compare the WRITTEN node (digits plus delimiter), so chance is
+    1/N for every cell and no ambiguity filtering is needed for the headline.
+    The last three are also reported on the unambiguous subset (ctrl / real /
+    pure_A / pure_B all with distinct first tokens and no multi-digit node) so
+    they line up with the first-token tables.
+    """
+    Jmax = min(K, H)
+    N = len(node_to_tok)
+
+    def ft(x):
+        return _first_tok(x, node_to_tok)
+
+    ctrl_rows = [r for r in recs if r.get("ctrl_q") is not None]
+    n_ctrl = len(ctrl_rows)
+    cc, cr, rc, rr = (np.zeros(Jmax + 1) for _ in range(4))
+    cpa, cpb = np.zeros(Jmax + 1), np.zeros(Jmax + 1)
+    u_cc, u_cr, u_rc, u_n = (np.zeros(Jmax + 1) for _ in range(4))
+
+    for r in ctrl_rows:
+        ctrl, comp = r["composed_ctrl"], r["composed"]
+        for j in range(Jmax + 1):
+            c = ctrl[j]
+            cp, rp = r["ctrl_full_by_j"][j], r["full_by_j"][j]
+            cc[j] += cp == c
+            cr[j] += cp == comp[j]
+            rc[j] += rp == c
+            rr[j] += rp == comp[j]
+            cpa[j] += cp == r["pure_A"]
+            cpb[j] += cp == r["pure_B"]
+            trio = [c, r["pure_A"], r["pure_B"]]
+            fts = [ft(x) for x in trio]
+            if len(set(fts)) == 3 and all(x not in ambiguous_nodes for x in trio):
+                u_n[j] += 1
+                u_cc[j] += cp == c
+                u_cr[j] += cp == comp[j]
+                u_rc[j] += rp == c
+
+    def rate(a, c):
+        return [None if c[i] == 0 else float(a[i] / c[i]) for i in range(len(a))]
+
+    return {
+        "n_records": len(recs),
+        "n_ctrl": n_ctrl,
+        "n_ctrl_frac": n_ctrl / max(len(recs), 1),
+        "chance": 1.0 / N,
+        "j_grid": list(range(Jmax + 1)),
+        "ctrl_vs_ctrl": rate(cc, [n_ctrl] * (Jmax + 1)),
+        "ctrl_vs_real": rate(cr, [n_ctrl] * (Jmax + 1)),
+        "real_vs_ctrl": rate(rc, [n_ctrl] * (Jmax + 1)),
+        "real_vs_real": rate(rr, [n_ctrl] * (Jmax + 1)),
+        "ctrl_match_pure_A": rate(cpa, [n_ctrl] * (Jmax + 1)),
+        "ctrl_match_pure_B": rate(cpb, [n_ctrl] * (Jmax + 1)),
+        "unambiguous_counts": u_n.tolist(),
+        "ctrl_vs_ctrl_unambiguous": rate(u_cc, u_n),
+        "ctrl_vs_real_unambiguous": rate(u_cr, u_n),
+        "real_vs_ctrl_unambiguous": rate(u_rc, u_n),
+    }
 
 
 def summarize(out: dict, node_to_tok: np.ndarray, ambiguous_nodes: set[int]) -> dict:
@@ -513,6 +651,10 @@ def main():
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--patch_answer_digit", action="store_true",
                    help="Also patch the first-answer-digit position (which predicts the second digit).")
+    p.add_argument("--control", choices=["none", "mismatched_query"], default="none",
+                   help="mismatched_query: matched control that injects the SAME donor "
+                        "residuals (same prompt, iteration, position class, layer) but taken "
+                        "from a different query's chain, i.e. about a provably different node.")
     p.add_argument("--random_init", action="store_true",
                    help="Random-init control (mechanism should vanish).")
     p.add_argument("--use_nope", default=None, action=argparse.BooleanOptionalAction)
@@ -571,7 +713,7 @@ def main():
 
     trials = generate_paired_trials(
         N=args.N, H=args.H, M=args.M, n_trials=args.n_trials, seed=args.eval_seed,
-        mode=args.mode,
+        mode=args.mode, with_control=args.control == "mismatched_query",
     )
 
     t0 = time.time()
@@ -579,12 +721,17 @@ def main():
         trials, tokenizer, model, args.device, K=K, H=args.H,
         max_len=args.max_len, node_to_tok=node_to_tok, ambiguous_nodes=ambiguous_set,
         patch_answer_digit=args.patch_answer_digit,
+        with_control=args.control == "mismatched_query",
     )
     print(f"[intv] {len(out['records'])} query-records in {time.time()-t0:.0f}s")
 
     summary = summarize(out, node_to_tok, ambiguous_set)
+    if args.control == "mismatched_query":
+        summary["control_matched"] = summarize_control(
+            out["records"], node_to_tok, ambiguous_set, K=K, H=args.H)
     summary.update({
         "mode": args.mode,
+        "control": args.control,
         "config_name": args.config_name,
         "checkpoint": str(args.checkpoint),
         "random_init": bool(args.random_init),
@@ -602,6 +749,14 @@ def main():
     print(f"[intv] first-token baseline receiver acc = {summary['baseline_receiver_acc']:.3f}")
     for key in ("match_composed", "match_composed_unambiguous", "match_pure_B"):
         print(f"[intv] first-token {key:26s} = {[None if x is None else round(x, 3) for x in summary[key]]}")
+    if args.control == "mismatched_query":
+        cm = summary["control_matched"]
+        print(f"[intv] MATCHED CONTROL n_ctrl={cm['n_ctrl']} chance={cm['chance']:.4f}")
+        for key in ("ctrl_vs_ctrl", "ctrl_vs_real", "real_vs_ctrl", "real_vs_real"):
+            print(f"[intv] FULL ANSWER {key:16s} = {[None if x is None else round(x, 3) for x in cm[key]]}")
+        for key in ("ctrl_vs_ctrl_unambiguous", "ctrl_vs_real_unambiguous",
+                    "real_vs_ctrl_unambiguous"):
+            print(f"[intv] unambig     {key:30s} = {[None if x is None else round(x, 3) for x in cm[key]]}")
 
     # Persist records (compact) + summary
     np.savez_compressed(
@@ -618,6 +773,12 @@ def main():
         answer_tokens=np.array([g + [-1] * (3 - len(g)) for g in answer_token_sequences(tokenizer, args.N, args.max_len)[0]],
                                dtype=np.int64),
         node_to_tok=node_to_tok,
+        ctrl_q=np.array([-1 if r.get("ctrl_q") is None else int(r["ctrl_q"]) for r in out["records"]],
+                        dtype=np.int64),
+        composed_ctrl=np.array([r["composed_ctrl"] if r.get("composed_ctrl") is not None
+                                else [-1] * (args.H + 1) for r in out["records"]], dtype=np.int64),
+        ctrl_full_by_j=np.array([r["ctrl_full_by_j"] for r in out["records"]], dtype=np.int64),
+        ctrl_pred_by_j=np.array([r["ctrl_pred_by_j"] for r in out["records"]], dtype=np.int64),
     )
     with open(out_dir / "intervention_summary.json", "w") as f:
         json.dump(summary, f, indent=2)

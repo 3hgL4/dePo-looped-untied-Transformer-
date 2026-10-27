@@ -9,3 +9,10 @@ __pycache__/
 /runs/
 /probe_outputs/
 /figures/
+
+# --- audit work (2026-10-26/27) ---
+# Large per-run activation dumps; the JSON summaries next to them are kept.
+/experiments/u_shape_probe/*/*.npz
+# Run logs and a temp dir that a bad $TMPDIR expansion created by accident.
+/*.log
+/UsersAdministratorAppDataLocalTemp/

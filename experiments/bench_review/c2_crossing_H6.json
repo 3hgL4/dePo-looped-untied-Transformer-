@@ -1,0 +1,294 @@
+{
+  "runs": [
+    {
+      "label": "s42",
+      "dir": "probe_outputs/c2/ouro-4x8_s42_H6",
+      "H_eval": 6,
+      "K": 8,
+      "L": 4,
+      "rows": [
+        {
+          "pos": 0,
+          "peak": 1.0,
+          "peak_level": 5,
+          "half_rise_level": 3,
+          "cross08": 5,
+          "shuf_peak": 0.0882
+        },
+        {
+          "pos": 1,
+          "peak": 0.9366,
+          "peak_level": 11,
+          "half_rise_level": 7,
+          "cross08": 11,
+          "shuf_peak": 0.0996
+        },
+        {
+          "pos": 2,
+          "peak": 0.5482,
+          "peak_level": 15,
+          "half_rise_level": 11,
+          "cross08": null,
+          "shuf_peak": 0.0728
+        },
+        {
+          "pos": 3,
+          "peak": 0.4782,
+          "peak_level": 19,
+          "half_rise_level": 15,
+          "cross08": null,
+          "shuf_peak": 0.0758
+        },
+        {
+          "pos": 4,
+          "peak": 0.6298,
+          "peak_level": 23,
+          "half_rise_level": 19,
+          "cross08": null,
+          "shuf_peak": 0.0706
+        },
+        {
+          "pos": 5,
+          "peak": 0.8792,
+          "peak_level": 27,
+          "half_rise_level": 23,
+          "cross08": 27,
+          "shuf_peak": 0.069
+        },
+        {
+          "pos": 6,
+          "peak": 0.9792,
+          "peak_level": 32,
+          "half_rise_level": 24,
+          "cross08": 28,
+          "shuf_peak": 0.0732
+        }
+      ],
+      "k_sweep": [
+        0.42671999335289,
+        0.3809199929237366,
+        0.457040011882782,
+        0.4519200026988983,
+        0.4731200039386749,
+        0.6959599852561951,
+        0.9834799766540527,
+        1.0
+      ]
+    },
+    {
+      "label": "s44",
+      "dir": "probe_outputs/c2/ouro-4x8_s44_H6",
+      "H_eval": 6,
+      "K": 8,
+      "L": 4,
+      "rows": [
+        {
+          "pos": 0,
+          "peak": 1.0,
+          "peak_level": 5,
+          "half_rise_level": 4,
+          "cross08": 5,
+          "shuf_peak": 0.1286
+        },
+        {
+          "pos": 1,
+          "peak": 0.9114,
+          "peak_level": 15,
+          "half_rise_level": 10,
+          "cross08": 11,
+          "shuf_peak": 0.0746
+        },
+        {
+          "pos": 2,
+          "peak": 0.8928,
+          "peak_level": 19,
+          "half_rise_level": 16,
+          "cross08": 16,
+          "shuf_peak": 0.0736
+        },
+        {
+          "pos": 3,
+          "peak": 0.8934,
+          "peak_level": 23,
+          "half_rise_level": 20,
+          "cross08": 20,
+          "shuf_peak": 0.0856
+        },
+        {
+          "pos": 4,
+          "peak": 0.8932,
+          "peak_level": 24,
+          "half_rise_level": 24,
+          "cross08": 24,
+          "shuf_peak": 0.0714
+        },
+        {
+          "pos": 5,
+          "peak": 0.8918,
+          "peak_level": 28,
+          "half_rise_level": 28,
+          "cross08": 28,
+          "shuf_peak": 0.0726
+        },
+        {
+          "pos": 6,
+          "peak": 0.9978,
+          "peak_level": 32,
+          "half_rise_level": 32,
+          "cross08": 32,
+          "shuf_peak": 0.0766
+        }
+      ],
+      "k_sweep": [
+        0.40487998723983765,
+        0.4288800060749054,
+        0.40303999185562134,
+        0.43779999017715454,
+        0.4448400139808655,
+        0.4758400022983551,
+        0.4487999975681305,
+        1.0
+      ]
+    }
+  ],
+  "delta": {
+    "a": "s42",
+    "b": "s44",
+    "L": 4,
+    "rows": [
+      {
+        "pos": 0,
+        "peak_level": [
+          5,
+          5
+        ],
+        "d_peak_lvl": 0,
+        "d_peak_iter": 0.0,
+        "half_rise": [
+          3,
+          4
+        ],
+        "d_half_lvl": 1,
+        "d_half_iter": 0.25,
+        "peak_acc": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "pos": 1,
+        "peak_level": [
+          11,
+          15
+        ],
+        "d_peak_lvl": 4,
+        "d_peak_iter": 1.0,
+        "half_rise": [
+          7,
+          10
+        ],
+        "d_half_lvl": 3,
+        "d_half_iter": 0.75,
+        "peak_acc": [
+          0.9366,
+          0.9114
+        ]
+      },
+      {
+        "pos": 2,
+        "peak_level": [
+          15,
+          19
+        ],
+        "d_peak_lvl": 4,
+        "d_peak_iter": 1.0,
+        "half_rise": [
+          11,
+          16
+        ],
+        "d_half_lvl": 5,
+        "d_half_iter": 1.25,
+        "peak_acc": [
+          0.5482,
+          0.8928
+        ]
+      },
+      {
+        "pos": 3,
+        "peak_level": [
+          19,
+          23
+        ],
+        "d_peak_lvl": 4,
+        "d_peak_iter": 1.0,
+        "half_rise": [
+          15,
+          20
+        ],
+        "d_half_lvl": 5,
+        "d_half_iter": 1.25,
+        "peak_acc": [
+          0.4782,
+          0.8934
+        ]
+      },
+      {
+        "pos": 4,
+        "peak_level": [
+          23,
+          24
+        ],
+        "d_peak_lvl": 1,
+        "d_peak_iter": 0.25,
+        "half_rise": [
+          19,
+          24
+        ],
+        "d_half_lvl": 5,
+        "d_half_iter": 1.25,
+        "peak_acc": [
+          0.6298,
+          0.8932
+        ]
+      },
+      {
+        "pos": 5,
+        "peak_level": [
+          27,
+          28
+        ],
+        "d_peak_lvl": 1,
+        "d_peak_iter": 0.25,
+        "half_rise": [
+          23,
+          28
+        ],
+        "d_half_lvl": 5,
+        "d_half_iter": 1.25,
+        "peak_acc": [
+          0.8792,
+          0.8918
+        ]
+      },
+      {
+        "pos": 6,
+        "peak_level": [
+          32,
+          32
+        ],
+        "d_peak_lvl": 0,
+        "d_peak_iter": 0.0,
+        "half_rise": [
+          24,
+          32
+        ],
+        "d_half_lvl": 8,
+        "d_half_iter": 2.0,
+        "peak_acc": [
+          0.9792,
+          0.9978
+        ]
+      }
+    ]
+  }
+}

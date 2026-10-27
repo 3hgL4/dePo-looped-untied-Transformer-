@@ -78,6 +78,7 @@ def build_tokenizer(
     M: int = 5,
     H_min: int = 1,
     H_max: int = 15,
+    node_format: str = "plain",
 ):
     """Recreate the TokenMappingTokenizer using the same procedure as training.
 
@@ -93,7 +94,7 @@ def build_tokenizer(
 
     rng = random.Random(999)
     map_texts = [
-        generate_pointer_chasing_sample(rng, N, H=h, M=M)[0]
+        generate_pointer_chasing_sample(rng, N, H=h, M=M, node_format=node_format)[0]
         for h in range(H_min, H_max + 1)
         for _ in range(50)
     ]
@@ -135,12 +136,16 @@ def get_q_token_ids(tokenizer) -> set[int]:
 # Eval-set generation and tokenization
 # ---------------------------------------------------------------------------
 
-def generate_eval_set(N: int, H_eval: int, M: int, n_samples: int, seed: int) -> list[dict]:
+def generate_eval_set(
+    N: int, H_eval: int, M: int, n_samples: int, seed: int,
+    node_format: str = "plain",
+) -> list[dict]:
     """Generate dePo samples with full per-hop metadata. Seed must differ from training."""
     rng = random.Random(seed)
     out = []
     for _ in range(n_samples):
-        text, _, meta = generate_pointer_chasing_sample(rng, N=N, H=H_eval, M=M)
+        text, _, meta = generate_pointer_chasing_sample(
+            rng, N=N, H=H_eval, M=M, node_format=node_format)
         out.append({"text": text, "meta": meta})
     return out
 
@@ -946,6 +951,10 @@ def main():
     p.add_argument("--zero_init", default=None, action=argparse.BooleanOptionalAction,
                    help="Override training zero_init. Default: read from training args.json.")
     p.add_argument("--probe_types", default="linear,mlp")
+    p.add_argument("--node_format", default=None,
+                   choices=("plain", "padded", "letters"),
+                   help="How node ids are written. Default: read from the training "
+                        "args.json (all paper runs: 'plain').")
     p.add_argument("--per_layer", action="store_true",
                    help="Looped models only: probe after every layer inside "
                         "every iteration (K*L+1 levels) instead of at block "
@@ -980,6 +989,8 @@ def main():
     if args.zero_init is None:
         args.zero_init = bool(train_args.get("zero_init", True))
     args.no_timestep_embedding = bool(train_args.get("no_timestep_embedding", False))
+    if args.node_format is None:
+        args.node_format = str(train_args.get("node_format", "plain"))
     if args.max_len is None:
         args.max_len = int(train_args.get("max_len", 512))
     print(f"[probe] runtime: use_nope={args.use_nope} zero_init={args.zero_init} "
@@ -997,6 +1008,7 @@ def main():
         args.N, M=args.M,
         H_min=int(train_args.get("H_min", 1)),
         H_max=int(train_args.get("H_max", 15)),
+        node_format=args.node_format,
     )
     vocab_size = len(tokenizer)
     pad_id = tokenizer.pad_token_id
@@ -1038,6 +1050,7 @@ def main():
     eval_set = generate_eval_set(
         N=args.N, H_eval=args.H_eval, M=args.M,
         n_samples=args.n_samples, seed=args.eval_seed,
+        node_format=args.node_format,
     )
 
     # Sanity check: model's own next-token accuracy at '?' position

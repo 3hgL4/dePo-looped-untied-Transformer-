@@ -23,6 +23,8 @@ from pathlib import Path
 
 import torch
 import torch.nn.functional as F
+torch.backends.cuda.matmul.allow_tf32 = True  # [local 2026-10-21] TF32 for 12GB laptop GPU
+torch.backends.cudnn.allow_tf32 = True
 from torch.optim.lr_scheduler import LambdaLR
 from transformers import AutoTokenizer
 
@@ -38,6 +40,7 @@ from src.utils import (
 )
 from src.datasets.pointer_chasing import generate_pointer_chasing_sample
 from src.evaluate import evaluate_per_hop
+from src.metrics import fold_note, frontier_three, parse_eval_hops
 
 
 def sample_stratified_texts(
@@ -47,6 +50,7 @@ def sample_stratified_texts(
     H_max_current: int,
     total_batch: int,
     M: int,
+    node_format: str = "plain",
 ):
     """Draw one stratified batch of texts over H ∈ [H_min, H_max_current], untokenized.
 
@@ -67,7 +71,7 @@ def sample_stratified_texts(
         n_samples = base + (1 if i < rem else 0)
         for _ in range(n_samples):
             text, _, _ = generate_pointer_chasing_sample(
-                rng=rng, N=N, H=H, M=M, shuffle_edges=True,
+                rng=rng, N=N, H=H, M=M, shuffle_edges=True, node_format=node_format,
             )
             texts.append(text)
             H_list.append(H)
@@ -80,15 +84,19 @@ def sample_stratified_texts(
     return texts, H_list
 
 
-def replay_data_rng(rng: random.Random, steps: int, H_max_at, **sample_kwargs) -> None:
+def replay_data_rng(rng: random.Random, steps: int, H_max_at, repeats: int = 1,
+                   **sample_kwargs) -> None:
     """Advance rng past the batches of training steps 1..steps.
 
     The data rng is not checkpointed, so a resumed run calls this to see the
     batches an uninterrupted run would have seen from step steps+1 on.
     H_max_at(step) is the curriculum ceiling used at that step.
+    repeats = micro-batches per step (gradient accumulation); each micro-batch
+    draws its own samples, so the replay has to draw them as well.
     """
     for step in range(1, steps + 1):
-        sample_stratified_texts(rng, H_max_current=H_max_at(step), **sample_kwargs)
+        for _ in range(max(1, repeats)):
+            sample_stratified_texts(rng, H_max_current=H_max_at(step), **sample_kwargs)
 
 
 def make_stratified_batch(
@@ -100,10 +108,12 @@ def make_stratified_batch(
     M: int,
     tokenizer,
     max_len: int,
+    node_format: str = "plain",
 ):
     """Build one tokenized stratified training batch (see sample_stratified_texts)."""
     texts, H_list = sample_stratified_texts(
         rng, N=N, H_min=H_min, H_max_current=H_max_current, total_batch=total_batch, M=M,
+        node_format=node_format,
     )
 
     out = tokenizer(
@@ -144,8 +154,26 @@ def build_parser() -> argparse.ArgumentParser:
                         help="Steps to stay at H_max=1 before any ramping begins.")
     parser.add_argument("--curriculum_ramp_steps", type=int, default=23000,
                         help="Steps over which H_max grows linearly from 1 to H_max, after the floor.")
+    parser.add_argument("--H_sample_max", type=int, default=0,
+                        help="Optional hard ceiling on the H actually sampled, independent of "
+                             "--H_max (0 = off, the default, which reproduces the old "
+                             "behaviour exactly). Needed to resume a checkpoint whose token map "
+                             "was built on a wider H range: --H_max keeps the vocabulary "
+                             "(and the fold notes) at the parent's setting while "
+                             "--H_sample_max restricts what the optimizer sees. Added "
+                             "2026-10-27 for the ISO experiment (resume the letters run on "
+                             "H<=4 data); eval hops must then be set explicitly with "
+                             "--eval_hops, e.g. --eval_hops 1,2,3,4.")
     parser.add_argument("--grad_clip", type=float, default=1.0,
                         help="Max grad norm. 0 disables.")
+    parser.add_argument("--grad_accum_steps", type=int, default=1,
+                        help="Micro-batches accumulated before one optimizer step "
+                             "(default 1 = the original behaviour). Added 2026-10-26 so "
+                             "ouro-4x10 can keep the effective batch at 120 samples while "
+                             "only 60 fit in 12 GB: --total_batch 60 --grad_accum_steps 2. "
+                             "The logged loss is the sum of the micro-batch losses (the "
+                             "mean over the effective batch, exact except for the unequal "
+                             "non-pad token counts of the halves).")
 
     # Training schedule
     parser.add_argument("--total_steps", type=int, default=100000)
@@ -159,6 +187,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--eval_interval", type=int, default=4000)
     parser.add_argument("--eval_n_samples", type=int, default=8000,
                         help="Prompts per evaluation, split evenly across hop lengths")
+    parser.add_argument("--eval_hops", type=str, default="",
+                        help="Hops to evaluate (P2). '' = every hop in [H_min, H_max], the "
+                             "paper's 15-hop grid; 'half' = 1..N//2, one representative per "
+                             "effective hop (saves 46.7 percent of eval wall-clock); or an "
+                             "explicit list such as '1,2,3'. Reporting must then use h_eff.")
 
     # Logging / checkpointing
     parser.add_argument("--log_interval", type=int, default=200,
@@ -189,6 +222,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tokenizer", type=str,
                         default="hf-internal-testing/llama-tokenizer",
                         help="Base tokenizer, downloaded from the Hugging Face Hub on first use")
+    parser.add_argument("--node_format", type=str, default="plain",
+                        choices=("plain", "padded", "letters"),
+                        help="How node ids are written (P5): 'plain' = 0..15, the paper's "
+                             "setting; 'padded' = 00..15 (measured worse); 'letters' = A..P, "
+                             "which removes the 7/16 first-token floor but is a NEW benchmark "
+                             "and cannot be compared with existing runs.")
     # The paper's looped runs zero-initialize the attention and MLP output projections and its
     # untied runs do not. Without either flag the family's paper setting is used; the resolved
     # choice is written to args.json.
@@ -226,7 +265,10 @@ def main():
     print("Estimating token map...")
     map_rng = random.Random(999)
     map_texts = [
-        generate_pointer_chasing_sample(map_rng, args.N, H=H, M=args.M, shuffle_edges=True)[0]
+        generate_pointer_chasing_sample(
+            map_rng, args.N, H=H, M=args.M, shuffle_edges=True,
+            node_format=args.node_format,
+        )[0]
         for H in range(args.H_min, args.H_max + 1)
         for _ in range(50)
     ]
@@ -288,7 +330,10 @@ def main():
     scheduler = LambdaLR(optimizer, lr_lambda=schedule_fn)
 
     # --- Eval helper ---
-    H_values = list(range(args.H_min, args.H_max + 1))
+    # P2: the evaluated hop list is configurable. Default = the paper's full grid;
+    # 'half' keeps one representative per effective hop (H and 16-H are the same
+    # question because pi^15 = pi^-1).
+    H_values = parse_eval_hops(args.eval_hops, args.H_min, args.H_max, args.N)
     n_per_hop = max(1, args.eval_n_samples // len(H_values))
 
     def run_eval(step: int) -> dict:
@@ -299,6 +344,7 @@ def main():
             K=K_max if is_looped else None,
             n_samples_per_hop=n_per_hop,
             eval_seed=99999 + step,  # vary across evals
+            node_format=args.node_format,
         )
         model.train()
         return {str(h): float(per_hop[h]) for h in H_values}
@@ -326,14 +372,37 @@ def main():
         floor = args.curriculum_floor_steps
         ramp = args.curriculum_ramp_steps
         if step <= floor:
-            return 1
-        if ramp <= 0 or step >= floor + ramp:
-            return args.H_max
-        progress = (step - floor) / ramp
-        h = max(args.H_min, int(1 + (args.H_max - 1) * progress + 0.5))
-        return min(h, args.H_max)
+            h = 1
+        elif ramp <= 0 or step >= floor + ramp:
+            h = args.H_max
+        else:
+            progress = (step - floor) / ramp
+            h = max(args.H_min, int(1 + (args.H_max - 1) * progress + 0.5))
+            h = min(h, args.H_max)
+        # [ISO] Optional sampling ceiling, independent of --H_max. Set --H_max to
+        # the value the checkpoint's vocabulary was built with and --H_sample_max
+        # to the hop range actually fed to the optimizer; that is the only way to
+        # resume an H_max=15 letters checkpoint on H<=4 data without shrinking the
+        # token map (H<=4 never emits the digits 5..9, so the mapped vocab drops
+        # from 34 to 28 and load_state_dict fails on the embeddings).
+        # Default 0 = off, byte-identical behaviour for every existing run.
+        if args.H_sample_max:
+            h = min(h, args.H_sample_max)
+        return h
 
     print(f"Total batch size: {args.total_batch}")
+    print(f"Eval hops ({len(H_values)}): {H_values}   node_format={args.node_format}")
+    note = fold_note(args.H_max, args.N)
+    if note:
+        print(f"[B2/P3] {note}")
+    # P1 depends on the reverse hop N-H being evaluated. On the 'half' grid it is
+    # not, so the rev frontier is 0 by construction - say so instead of letting a
+    # reader conclude the model "only solves forward".
+    missing_rev = [args.N - h for h in H_values if (args.N - h) not in H_values]
+    if missing_rev:
+        print(f"[P1] eval grid is not closed under H -> N-H (missing {missing_rev}): "
+              f"frontier_rev is 0 by construction and fwd/rev/max collapses to fwd. "
+              f"Use --eval_hops '' to read the reverse side.")
     print(f"Curriculum: floor={args.curriculum_floor_steps} steps at H=1, then ramp to {args.H_max} over {args.curriculum_ramp_steps} steps, then stratified-uniform")
     print(f"Gradient clipping: max_norm={args.grad_clip}")
 
@@ -343,6 +412,7 @@ def main():
         N=args.N, H_min=args.H_min, H_max_current=args.H_max,
         total_batch=args.total_batch, M=args.M,
         tokenizer=tokenizer, max_len=args.max_len,
+        node_format=args.node_format,
     )
     counter = Counter(sanity_batch["H_list"])
     print(f"Stratification check (full range): {dict(sorted(counter.items()))}")
@@ -361,50 +431,63 @@ def main():
     if resume_step > 0:
         t0 = time.time()
         replay_data_rng(rng, resume_step, current_H_max, N=args.N, H_min=args.H_min,
-                        total_batch=args.total_batch, M=args.M)
+                        total_batch=args.total_batch, M=args.M,
+                        repeats=args.grad_accum_steps)
         log(f"[resume] replayed the data rng through step {resume_step} in {time.time() - t0:.0f}s")
 
     model.train()
     start_time = time.time()
     last_log_time = start_time
 
+    accum = max(1, args.grad_accum_steps)
     for step in range(resume_step + 1, args.total_steps + 1):
         h_max_now = current_H_max(step)
-        batch = make_stratified_batch(
-            rng=rng,
-            N=args.N, H_min=args.H_min, H_max_current=h_max_now,
-            total_batch=args.total_batch, M=args.M,
-            tokenizer=tokenizer, max_len=args.max_len,
-        )
-        tokens = batch["tokens"].to(device)
-        mask = batch["attention_mask"].to(device)
-
-        if args.aux_deep_supervision:
-            aux_captured.clear()
-
-        if is_looped:
-            logits = model(tokens, mask, K=K_max)
-        else:
-            logits = model(tokens, mask)
-
-        # Next-token CE loss on all non-pad tokens
-        logits_shifted = logits[:, :-1].reshape(-1, config["vocab_size"])
-        targets = tokens[:, 1:].reshape(-1)
-        loss = F.cross_entropy(logits_shifted, targets, ignore_index=pad_id)
-
-        # Auxiliary deep supervision: same next-token loss read out from each
-        # captured intermediate layer through the shared norm + unembedding.
-        if args.aux_deep_supervision and aux_captured:
-            base = unwrap_model(model)
-            aux_loss = 0.0
-            for state in aux_captured:
-                aux_logits = base.out_proj(base.norm(state))
-                aux_logits = aux_logits[:, :-1].reshape(-1, config["vocab_size"])
-                aux_loss = aux_loss + F.cross_entropy(aux_logits, targets, ignore_index=pad_id)
-            loss = loss + args.aux_weight * aux_loss / len(aux_captured)
-
         optimizer.zero_grad()
-        loss.backward()
+        loss_sum = 0.0
+        for _micro in range(accum):
+            batch = make_stratified_batch(
+                rng=rng,
+                N=args.N, H_min=args.H_min, H_max_current=h_max_now,
+                total_batch=args.total_batch, M=args.M,
+                tokenizer=tokenizer, max_len=args.max_len,
+                node_format=args.node_format,
+            )
+            tokens = batch["tokens"].to(device)
+            mask = batch["attention_mask"].to(device)
+
+            if args.aux_deep_supervision:
+                aux_captured.clear()
+
+            # [local 2026-10-21] bf16 autocast for 12GB laptop GPU (paper used H100;
+            # deviation recorded in notes/deviations_4.md)
+            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=(device == "cuda")):
+                if is_looped:
+                    logits = model(tokens, mask, K=K_max)
+                else:
+                    logits = model(tokens, mask)
+            logits = logits.float()
+
+            # Next-token CE loss on all non-pad tokens
+            logits_shifted = logits[:, :-1].reshape(-1, config["vocab_size"])
+            targets = tokens[:, 1:].reshape(-1)
+            loss = F.cross_entropy(logits_shifted, targets, ignore_index=pad_id)
+
+            # Auxiliary deep supervision: same next-token loss read out from each
+            # captured intermediate layer through the shared norm + unembedding.
+            if args.aux_deep_supervision and aux_captured:
+                base = unwrap_model(model)
+                aux_loss = 0.0
+                for state in aux_captured:
+                    aux_logits = base.out_proj(base.norm(state))
+                    aux_logits = aux_logits[:, :-1].reshape(-1, config["vocab_size"])
+                    aux_loss = aux_loss + F.cross_entropy(aux_logits, targets, ignore_index=pad_id)
+                loss = loss + args.aux_weight * aux_loss / len(aux_captured)
+
+            loss_sum += loss.item()
+            (loss / accum).backward()
+            del logits, logits_shifted, targets, tokens, mask
+
+        loss_rep = loss_sum / accum
         if args.grad_clip > 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=args.grad_clip)
         optimizer.step()
@@ -415,30 +498,36 @@ def main():
             steps_per_sec = args.log_interval / max(now - last_log_time, 1e-6) if step > 1 else 0.0
             last_log_time = now
             lr_now = scheduler.get_last_lr()[0]
-            log(f"step={step:>7d}  loss={loss.item():.4f}  lr={lr_now:.2e}  "
+            log(f"step={step:>7d}  loss={loss_rep:.4f}  lr={lr_now:.2e}  "
                 f"H_max={h_max_now:>2}  sps={steps_per_sec:.1f}  elapsed={(now-start_time)/60:.1f}min")
 
         if step % args.eval_interval == 0 or step == args.total_steps:
             per_hop = run_eval(step)
+            # P1: report fwd / rev / max, all counted in EFFECTIVE hops (h_eff =
+            # min(H, N-H)). fwd is the paper's H_sol@0.8 unchanged; rev counts the
+            # same curve from H=N-1 downward, because pi^(N-1) = pi^-1.
+            front = frontier_three(per_hop, thr=0.8, N=args.N)
             row = {
                 "step": step,
-                "loss": float(loss.item()),
+                "loss": float(loss_rep),
                 "per_hop_acc": per_hop,
+                "frontier_thr": front["thr"],
+                "frontier_fwd": front["fwd"],
+                "frontier_rev": front["rev"],
+                "frontier_max": front["max"],
             }
             append_trajectory(trajectory_path, row)
-            # Solved-chain depth: largest H with every h <= H at accuracy >= 0.8
-            sorted_hs = sorted(int(k) for k in per_hop)
-            frontier_h = 0
-            for h in sorted_hs:
-                if per_hop[str(h)] >= 0.8:
-                    frontier_h = h
-                else:
-                    break
-            mid_h = max(1, args.H_max // 2)
-            log(f"  EVAL step={step}  H=1: {per_hop['1']:.3f}  "
-                f"H={mid_h}: {per_hop[str(mid_h)]:.3f}  "
-                f"H={args.H_max}: {per_hop[str(args.H_max)]:.3f}  "
-                f"H_sol@0.8={frontier_h}")
+
+            def _acc(h: int) -> str:
+                value = per_hop.get(str(h))
+                return f"{value:.3f}" if value is not None else "n/a"
+
+            mid_h = H_values[len(H_values) // 2]
+            log(f"  EVAL step={step}  H=1: {_acc(1)}  "
+                f"H={mid_h}: {_acc(mid_h)}  "
+                f"H={H_values[-1]}: {_acc(H_values[-1])}  "
+                f"H_sol@0.8={front['fwd']}  "
+                f"fwd/rev/max={front['fwd']}/{front['rev']}/{front['max']}")
 
         if step % args.ckpt_interval == 0 or step == args.total_steps:
             ckpt_path = save_dir / "checkpoint.pt"

@@ -48,6 +48,7 @@ def evaluate_per_hop(
     K: int = None,
     n_samples_per_hop: int = 500,
     eval_seed: int = 99999,
+    node_format: str = "plain",
 ) -> dict[int, float]:
     """Evaluate accuracy at each hop count separately.
 
@@ -55,6 +56,9 @@ def evaluate_per_hop(
     from a generator seeded with eval_seed + H, scored on the digits of the LAST
     query's answer under teacher forcing (decoded and compared as a string). The
     last query ends the sequence, so no delimiter follows it.
+
+    `node_format` must match the format the model was trained on ("plain" for
+    every paper run); it only changes how node ids are spelled in the prompt.
 
     Returns:
         dict mapping H -> accuracy
@@ -74,7 +78,8 @@ def evaluate_per_hop(
         texts = []
         answers_list = []
         for _ in range(n_samples_per_hop):
-            text, answer, _ = generate_pointer_chasing_sample(rng, N, H, M)
+            text, answer, _ = generate_pointer_chasing_sample(
+                rng, N, H, M, node_format=node_format)
             texts.append(text)
             answers_list.append(answer)
 

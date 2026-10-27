@@ -1,0 +1,30 @@
+{
+  "ambiguous_nodes": [
+    1,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "config_name": "deep-32",
+  "checkpoint": "runs/slice/deep-32_s42/checkpoint.pt",
+  "random_init": false,
+  "is_looped": false,
+  "n_levels": 33,
+  "per_layer": false,
+  "K_or_layers": 32,
+  "N": 16,
+  "H_eval": 2,
+  "n_queries": 160,
+  "sanity": {
+    "logits_max_abs_diff": 0.0,
+    "logits_mean_abs_diff": 0.0,
+    "logits_match_atol": 0.001,
+    "logits_match_pass": true,
+    "lens_vs_forward_argmax_agree_rate": 1.0,
+    "argmax_agree_pass": true,
+    "solved_rate": 0.48125
+  }
+}

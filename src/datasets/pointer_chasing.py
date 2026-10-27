@@ -6,9 +6,19 @@ M queries that share the edge list and the hop count H. Each query asks for pi^H
 the node H steps along the cycle from its start node s.
 
 Format: "0 > 3 , 3 > 7 , 7 > 1 , ... | hop H s ? answer | hop H s' ? answer' | ..."
+
+`node_format` (addition 2026-10-26, P5 in
+notes/2026-10-26_基准测量缺陷与改进提案.md) changes only how a node id is
+WRITTEN; the sampled cycle, the queries and the metadata stay identical. "plain"
+(default) reproduces the paper's bytes exactly; "letters" (A..P) gives 16 answers
+whose first token is unique, which removes the 7/16 first-token floor of the lens
+readout. Switching a run to "letters" makes it a new benchmark: its numbers
+cannot be mixed with the decimal runs.
 """
 
 import random
+
+from src.node_tokens import node_symbols
 
 
 def generate_pointer_chasing_sample(
@@ -17,6 +27,7 @@ def generate_pointer_chasing_sample(
     H: int,
     M: int = 5,
     shuffle_edges: bool = True,
+    node_format: str = "plain",
 ) -> tuple[str, str, dict]:
     """Generate one pointer chasing sample with M queries.
 
@@ -26,6 +37,9 @@ def generate_pointer_chasing_sample(
         H: exact number of hops (sequential depth)
         M: number of queries per sample (more = stronger training signal)
         shuffle_edges: randomize edge presentation order
+        node_format: how a node id is written: "plain" = "0".."15" (the
+            paper's), "padded" = "00".."15", "letters" = "A".."P". Only the
+            text changes; metadata always keeps integer node ids.
 
     Returns:
         (text, answer, metadata) where:
@@ -33,6 +47,11 @@ def generate_pointer_chasing_sample(
         - answer: the last answer (for eval compatibility)
         - metadata: dict with all query results for per-hop eval
     """
+    labels = node_symbols(N, node_format) if node_format != "plain" else None
+
+    def label(node: int) -> str:
+        return labels[node] if labels is not None else str(node)
+
     # Random circular permutation: order[i] -> order[(i+1) % N]
     order = rng.sample(range(N), N)
 
@@ -46,7 +65,7 @@ def generate_pointer_chasing_sample(
     if shuffle_edges:
         rng.shuffle(edges)
 
-    edges_str = " , ".join(f"{s} > {d}" for s, d in edges)
+    edges_str = " , ".join(f"{label(s)} > {label(d)}" for s, d in edges)
 
     # Generate M queries, all at hop count H
     queries = []
@@ -62,8 +81,8 @@ def generate_pointer_chasing_sample(
             intermediates.append(order[next_idx])
 
         answer_node = intermediates[-1]
-        queries.append(f"hop {H} {start_node} ? {answer_node}")
-        answer_str_for_eval = str(answer_node)
+        queries.append(f"hop {H} {label(start_node)} ? {label(answer_node)}")
+        answer_str_for_eval = label(answer_node)
         all_answers.append({"start": start_node, "answer": answer_node,
                            "answer_str": answer_str_for_eval,
                            "intermediates": intermediates,

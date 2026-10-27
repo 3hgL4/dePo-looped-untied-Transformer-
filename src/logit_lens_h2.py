@@ -37,6 +37,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from src.lens_metrics import format_table, node_groups, readout_metrics
 from src.model import LoopedTransformer, Transformer
 from src.model_configs import create_model
 from src.probe_h2 import (
@@ -382,6 +383,10 @@ def main():
     p.add_argument("--sanity_only", action="store_true",
                    help="Run on just --n_samples (e.g. 8) and only report sanity "
                         "checks. Used to validate the lens before a full sweep.")
+    p.add_argument("--node_format", default=None,
+                   choices=("plain", "padded", "letters"),
+                   help="How node ids are written. Default: read from the training "
+                        "args.json (all paper runs: 'plain').")
     p.add_argument("--sanity_min_solved", type=float, default=0.6,
                    help="Abort if solved_rate at K=K_max is below this. Catches "
                         "PE mismatch (fallback baseline ~0.4375). 0.0 to skip; "
@@ -399,8 +404,10 @@ def main():
         args.zero_init = bool(train_args.get("zero_init", True))
     if args.max_len is None:
         args.max_len = int(train_args.get("max_len", 512))
+    if args.node_format is None:
+        args.node_format = str(train_args.get("node_format", "plain"))
     print(f"[lens] runtime: use_nope={args.use_nope} zero_init={args.zero_init} "
-          f"max_len={args.max_len}")
+          f"max_len={args.max_len} node_format={args.node_format}")
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -410,7 +417,7 @@ def main():
 
     # Tokenizer + model
     print("[lens] building tokenizer...")
-    tokenizer = build_tokenizer(args.N)
+    tokenizer = build_tokenizer(args.N, node_format=args.node_format)
     vocab_size = len(tokenizer)
     pad_id = tokenizer.pad_token_id
 
@@ -442,6 +449,7 @@ def main():
     eval_set = generate_eval_set(
         N=args.N, H_eval=args.H_eval, M=args.M,
         n_samples=args.n_samples, seed=args.eval_seed,
+        node_format=args.node_format,
     )
 
     # Run lens
@@ -490,6 +498,16 @@ def main():
         )
         raise RuntimeError(msg)
 
+    # P4: floor-free readouts. The first-token readout collapses 16 nodes into 10
+    # groups (1 and 10..15 share the token "1"), so a constant answer scores
+    # 7/16 = 0.4375 for free. Report group-level accuracy and balanced accuracy
+    # alongside the raw per-level numbers, with their own chance levels.
+    groups = node_groups(node_to_tok)
+    floor_metrics = readout_metrics(out["probs"], out["chains"][:, -1], groups)
+    print(format_table(out_dir.name, floor_metrics))
+    with open(out_dir / "lens_metrics.json", "w") as f:
+        json.dump(floor_metrics, f, indent=2)
+
     # Persist
     np.savez_compressed(
         out_dir / "logit_lens.npz",
@@ -512,6 +530,15 @@ def main():
         "N": int(args.N),
         "H_eval": int(args.H_eval),
         "n_queries": int(out["probs"].shape[0]),
+        "node_format": args.node_format,
+        "first_token_floor": floor_metrics["first_token_floor"],
+        "floor_free_metrics": {
+            key: floor_metrics[key] for key in (
+                "groups", "n_groups", "first_token_floor", "group_top1_baseline",
+                "group_balanced_baseline", "node_top1_unambig", "group_top1",
+                "group_balanced", "p_answer",
+            )
+        },
         "sanity": sanity,
     }
     if not args.sanity_only:
