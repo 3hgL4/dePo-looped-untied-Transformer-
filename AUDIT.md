@@ -92,15 +92,15 @@ DRY_RUN=1 bash run_p3_p5_c4.sh && bash run_p3_p5_c4.sh
 # C4 with the matched control (includes a bit-exact regression of the published cells)
 bash run_c4_control.sh
 # summaries
-python tools/frontier_report.py --run runs/slice/ouro-4x10_s44
+python tools/frontier_report.py runs/slice/ouro-4x10_s44
 python tools/c2_crossing.py --pair s42:probe_outputs/c2/H6_s42 --pair s44:probe_outputs/c2/H6_s44
 python tools/h2_ladder.py --checkpoint <ckpt> --node_format letters --H_eval 1,2,3,4
 python tools/c4_control_report.py --root intervention_outputs/p3p5c4_control --draws 1000
 ```
 
-Tests: `pytest tests -q` → **98 passed**. One test (`test_tables.py::test_table1_counts`)
-fails only because the upstream shipped run directories are absent from this working tree;
-it passes on a clean clone.
+Tests: `pytest tests -q` → **99 passed** (CPU only, about 80 s). `test_tables.py` reads the
+upstream shipped run directories, so it fails only if those are deleted from a working tree;
+a clean clone is green.
 
 ## 6. What the numbers do not support
 
